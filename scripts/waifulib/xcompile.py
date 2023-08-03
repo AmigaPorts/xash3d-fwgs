@@ -504,6 +504,8 @@ def options(opt):
 		help='enable building for android, format: --android=<arch>,<toolchain>,<api>, example: --android=armeabi-v7a-hard,4.9,9')
 	xc.add_option('--enable-magx', action='store_true', dest='MAGX', default=False,
 		help='enable building for Motorola MAGX [default: %default]')
+	xc.add_option('--enable-amiga', action='store_true', dest='AMIGA', default=False,
+		help='enable building for Amiga [default: %default]')
 	xc.add_option('--enable-msvc-wine', action='store_true', dest='MSVC_WINE', default=False,
 		help='enable building with MSVC using Wine [default: %default]')
 	xc.add_option('--nswitch', action='store_true', dest='NSWITCH', default = False,
@@ -551,6 +553,11 @@ def configure(conf):
 		conf.env.INCLUDES_MAGX = [toolchain_path + i for i in ['ezx-z6/include', 'qt-2.3.8/include']]
 		conf.env.LIBPATH_MAGX  = [toolchain_path + i for i in ['ezx-z6/lib', 'qt-2.3.8/lib']]
 		conf.env.LINKFLAGS_MAGX = ['-Wl,-rpath-link=' + i for i in conf.env.LIBPATH_MAGX]
+	elif conf.options.AMIGA:
+		conf.env.CFLAGS += ['-noixemul', '-m68040', '-mhard-float', '-Wno-strict-aliasing']
+		conf.env.CXXFLAGS += ['-noixemul', '-m68040', '-mhard-float', '-Wno-strict-aliasing']
+		conf.env.LDFLAGS += ['-noixemul', '-m68040', '-mhard-float', '-Wno-strict-aliasing']
+		conf.msg("Amiga:" , True)
 	elif conf.options.MSVC_WINE:
 		try:
 			toolchain_path = conf.environ['MSVC_WINE_PATH']
@@ -594,9 +601,10 @@ def configure(conf):
 		conf.env.DEST_OS = 'psvita'
 
 	conf.env.MAGX = conf.options.MAGX
+	conf.env.AMIGA = conf.options.AMIGA
 	conf.env.MSVC_WINE = conf.options.MSVC_WINE
 	conf.env.SAILFISH = conf.options.SAILFISH
-	MACRO_TO_DESTOS = OrderedDict({ '__ANDROID__' : 'android', '__SWITCH__' : 'nswitch', '__vita__' : 'psvita' })
+	MACRO_TO_DESTOS = OrderedDict({ '__ANDROID__' : 'android', '__SWITCH__' : 'nswitch', '__vita__' : 'psvita', '__AMIGA__': 'amiga' })
 	for k in c_config.MACRO_TO_DESTOS:
 		MACRO_TO_DESTOS[k] = c_config.MACRO_TO_DESTOS[k] # ordering is important
 	c_config.MACRO_TO_DESTOS  = MACRO_TO_DESTOS

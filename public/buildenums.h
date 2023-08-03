@@ -42,6 +42,7 @@ GNU General Public License for more details.
 #define PLATFORM_NSWITCH    13
 #define PLATFORM_PSVITA     14
 #define PLATFORM_LINUX_UNKNOWN 15
+#define PLATFORM_AMIGA      16
 
 #if XASH_WIN32
 	#define XASH_PLATFORM PLATFORM_WIN32
@@ -65,6 +66,8 @@ GNU General Public License for more details.
 	#define XASH_PLATFORM PLATFORM_DOS4GW
 #elif XASH_HAIKU
 	#define XASH_PLATFORM PLATFORM_HAIKU
+#elif XASH_AMIGA
+	#define XASH_PLATFORM PLATFORM_AMIGA
 #elif XASH_SERENITY
 	#define XASH_PLATFORM PLATFORM_SERENITY
 #elif XASH_IRIX
@@ -90,6 +93,7 @@ GNU General Public License for more details.
 #define ARCHITECTURE_E2K     7
 #define ARCHITECTURE_RISCV   8
 #define ARCHITECTURE_PPC     9
+#define ARCHITECTURE_M68K    10
 
 #if XASH_AMD64
 	#define XASH_ARCHITECTURE ARCHITECTURE_AMD64
@@ -107,6 +111,8 @@ GNU General Public License for more details.
 	#define XASH_ARCHITECTURE ARCHITECTURE_RISCV
 #elif XASH_PPC
 	#define XASH_ARCHITECTURE ARCHITECTURE_PPC
+#elif XASH_M68K
+	#define XASH_ARCHITECTURE ARCHITECTURE_M68K
 #else
 	#error
 #endif

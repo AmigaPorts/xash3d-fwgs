@@ -101,7 +101,7 @@ REFDLLS = [
 ]
 
 def options(opt):
-	opt.load('reconfigure compiler_optimizations xshlib xcompile compiler_cxx compiler_c sdl2 clang_compilation_database strip_on_install waf_unit_test msdev msvs msvc subproject cmake')
+	opt.load('reconfigure compiler_optimizations xshlib xcompile sdl2 compiler_cxx compiler_c clang_compilation_database strip_on_install waf_unit_test msdev msvs msvc subproject cmake')
 
 	grp = opt.add_option_group('Common options')
 
@@ -197,6 +197,15 @@ def configure(conf):
 		conf.options.GL4ES  = True
 		conf.options.GL     = False
 	elif conf.env.MAGX:
+		conf.options.SDL12            = True
+		conf.options.NO_VGUI          = True
+		conf.options.GL               = False
+		conf.options.LOW_MEMORY       = 1
+		conf.options.SINGLE_BINARY    = True
+		conf.options.NO_ASYNC_RESOLVE = True
+		conf.define('XASH_SDLMAIN', 1)
+		enforce_pic = False
+	elif conf.env.AMIGA:
 		conf.options.SDL12            = True
 		conf.options.NO_VGUI          = True
 		conf.options.GL               = False

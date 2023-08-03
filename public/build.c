@@ -158,6 +158,8 @@ const char *Q_ArchitectureStringByID( const int arch, const uint abi, const int 
 		return "amd64";
 	case ARCHITECTURE_X86:
 		return "i386";
+	case ARCHITECTURE_M68K:
+		return "m68k";
 	case ARCHITECTURE_E2K:
 		return "e2k";
 	case ARCHITECTURE_JS:

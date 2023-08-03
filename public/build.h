@@ -65,6 +65,7 @@ Then you can use another oneliner to query all variables:
 #undef XASH_EMSCRIPTEN
 #undef XASH_FREEBSD
 #undef XASH_HAIKU
+#undef XASH_AMIGA
 #undef XASH_IOS
 #undef XASH_IRIX
 #undef XASH_JS
@@ -77,6 +78,7 @@ Then you can use another oneliner to query all variables:
 #undef XASH_OPENBSD
 #undef XASH_POSIX
 #undef XASH_PPC
+#undef XASH_M68K
 #undef XASH_RISCV
 #undef XASH_RISCV_DOUBLEFP
 #undef XASH_RISCV_SINGLEFP
@@ -120,6 +122,8 @@ Then you can use another oneliner to query all variables:
 		#define XASH_OPENBSD 1
 	#elif defined __HAIKU__
 		#define XASH_HAIKU 1
+	#elif defined __amigaos__
+		#define XASH_AMIGA 1
 	#elif defined __serenity__
 		#define XASH_SERENITY 1
 	#elif defined __sgi
@@ -242,6 +246,8 @@ Then you can use another oneliner to query all variables:
 	#else
 		#error "Unknown RISC-V float ABI"
 	#endif
+#elif defined __M68K__ || defined __m68k__
+	#define XASH_M68K 1
 #else
 	#error "Place your architecture name here! If this is a mistake, try to fix conditions above and report a bug"
 #endif
