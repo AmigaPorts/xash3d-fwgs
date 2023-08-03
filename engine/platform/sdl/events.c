@@ -80,12 +80,15 @@ GNU General Public License for more details.
 #define SDL_SCANCODE_KP_MULTIPLY SDLK_KP_MULTIPLY
 #define SDL_SCANCODE_NUMLOCKCLEAR SDLK_NUMLOCK
 #define SDL_SCANCODE_CAPSLOCK SDLK_CAPSLOCK
+#define SDL_SCANCODE_SCROLLLOCK SDLK_SCROLLOCK
 #define SDL_SCANCODE_SLASH SDLK_SLASH
 #define SDL_SCANCODE_PERIOD SDLK_PERIOD
 #define SDL_SCANCODE_SEMICOLON SDLK_SEMICOLON
 #define SDL_SCANCODE_APOSTROPHE SDLK_QUOTE
 #define SDL_SCANCODE_COMMA SDLK_COMMA
 #define SDL_SCANCODE_PRINTSCREEN SDLK_PRINT
+#define SDL_SCANCODE_AC_BACK -1
+#define SDL_SCANCODE_PAUSE SDLK_BREAK
 #define SDL_SCANCODE_UNKNOWN SDLK_UNKNOWN
 #define SDL_GetScancodeName( x ) "unknown"
 #define SDL_JoystickID Uint8
@@ -305,8 +308,10 @@ static void SDLash_MouseEvent( SDL_MouseButtonEvent button )
 
 	if( button.state == SDL_RELEASED )
 		down = 0;
+#if SDL_VERSION_ATLEAST( 2, 0, 0 )
 	else if( button.clicks >= 2 )
 		down = 2; // special state for double-click in UI
+#endif
 	else
 		down = 1;
 

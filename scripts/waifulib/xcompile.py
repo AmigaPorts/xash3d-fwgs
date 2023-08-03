@@ -556,7 +556,7 @@ def configure(conf):
 	elif conf.options.AMIGA:
 		conf.env.CFLAGS += ['-noixemul', '-m68040', '-mhard-float', '-Wno-strict-aliasing']
 		conf.env.CXXFLAGS += ['-noixemul', '-m68040', '-mhard-float', '-Wno-strict-aliasing']
-		conf.env.LDFLAGS += ['-noixemul', '-m68040', '-mhard-float', '-Wno-strict-aliasing']
+		conf.env.LDFLAGS = ['-noixemul', '-m68040', '-mhard-float', '-Wno-strict-aliasing']
 		conf.msg("Amiga:" , True)
 	elif conf.options.MSVC_WINE:
 		try:

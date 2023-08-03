@@ -211,10 +211,15 @@ const char *COM_NameForFunction( void *hInstance, void *function )
 #endif
 	// NOTE: dladdr() is a glibc extension
 	{
+#ifndef XASH_AMIGA
 		Dl_info info = {0};
 		dladdr( (void*)function, &info );
+
 		if( info.dli_sname )
 			return COM_GetPlatformNeutralName( info.dli_sname );
+#else
+		return "";
+#endif
 	}
 #ifdef XASH_ALLOW_SAVERESTORE_OFFSETS
 	return COM_OffsetNameForFunction( function );

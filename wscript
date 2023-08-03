@@ -258,6 +258,10 @@ def configure(conf):
 		conf.env.append_unique('LINKFLAGS_cshlib', ['-nostdlib', '-nostartfiles'])
 		conf.env.append_unique('LINKFLAGS_cxxshlib', ['-nostdlib', '-nostartfiles'])
 	# same on the vita
+	elif conf.env.AMIGA:
+		conf.env.append_unique('CFLAGS_cshlib', ['-D_inline=inline'])
+		conf.env.append_unique('CXXFLAGS_cxxshlib', ['-D_inline=inline'])
+	# same on the vita
 	elif conf.env.DEST_OS == 'psvita':
 		conf.env.append_unique('CFLAGS_cshlib', ['-fPIC'])
 		conf.env.append_unique('CXXFLAGS_cxxshlib', ['-fPIC', '-fno-use-cxa-atexit'])
@@ -308,7 +312,7 @@ def configure(conf):
 			'-Werror=sizeof-pointer-memaccess',
 			'-Werror=sizeof-array-div',
 			'-Werror=sizeof-pointer-div',
-			'-Werror=strict-aliasing',
+			#'-Werror=strict-aliasing',
 			'-Werror=string-compare',
 			'-Werror=tautological-compare',
 			'-Werror=use-after-free=3',

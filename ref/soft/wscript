@@ -32,11 +32,21 @@ def build(bld):
 	if bld.env.DEDICATED:
 		return
 
-	bld.shlib(source   = bld.path.ant_glob(['*.c']),
-		target   = 'ref_soft',
-		features = 'c',
-		includes = '.',
-		use      = libs,
-		install_path = bld.env.LIBDIR,
-		subsystem = bld.env.MSVC_SUBSYSTEM
-	)
+	if bld.env.AMIGA:
+		bld.stlib(source   = bld.path.ant_glob(['*.c']),
+			target   = 'ref_soft',
+			features = 'c',
+			includes = '.',
+			use      = libs,
+			install_path = bld.env.LIBDIR,
+			subsystem = bld.env.MSVC_SUBSYSTEM
+		)
+	else:
+		bld.shlib(source   = bld.path.ant_glob(['*.c']),
+			target   = 'ref_soft',
+			features = 'c',
+			includes = '.',
+			use      = libs,
+			install_path = bld.env.LIBDIR,
+			subsystem = bld.env.MSVC_SUBSYSTEM
+		)

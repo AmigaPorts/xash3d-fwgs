@@ -19,13 +19,50 @@ GNU General Public License for more details.
 #define SOCKET_ERROR (-1)
 #define SOCKET int
 typedef int WSAsize_t;
+#define IN6_IS_ADDR_V4MAPPED(a) \
+        (((uint32_t *) (a))[0] == 0 && ((uint32_t *) (a))[1] == 0 && \
+         ((uint8_t *) (a))[8] == 0 && ((uint8_t *) (a))[9] == 0 && \
+         ((uint8_t *) (a))[10] == 0xff && ((uint8_t *) (a))[11] == 0xff)
 struct in_addr {unsigned long s_addr;};
+struct in6_addr {
+	uint8_t* s6_addr;			/* 128-bit IP6 address */
+};
 struct sockaddr_in{ short sin_family;unsigned short sin_port;struct in_addr sin_addr;};
+typedef unsigned char bsd_sa_family_t;
+struct sockaddr_in6 {
+	uint8_t		sin6_len;	/* length of this struct */
+	bsd_sa_family_t	sin6_family;	/* AF_INET6 */
+	in_port_t	sin6_port;	/* Transport layer port # */
+	uint32_t	sin6_flowinfo;	/* IP6 flow information */
+	struct in6_addr	sin6_addr;	/* IP6 address */
+	uint32_t	sin6_scope_id;	/* scope zone index */
+};
 struct sockaddr {short sa_family;int stub[32];};
 struct hostent {int h_addr_list[1];};
-struct timeval {long tv_sec;long tv_usec;};
+typedef unsigned int socklen_t;
 
+#define	_SS_MAXSIZE	128U
+#define	_SS_ALIGNSIZE	(sizeof(int64_t))
+#define	_SS_PAD1SIZE	(_SS_ALIGNSIZE - sizeof(unsigned char) - \
+			    sizeof(bsd_sa_family_t))
+#define	_SS_PAD2SIZE	(_SS_MAXSIZE - sizeof(unsigned char) - \
+			    sizeof(bsd_sa_family_t) - _SS_PAD1SIZE - _SS_ALIGNSIZE)
+struct sockaddr_storage {
+	unsigned char	ss_len;		/* address length */
+	bsd_sa_family_t 	ss_family;	/* address family */
+	char		__ss_pad1[_SS_PAD1SIZE];
+	int64_t	__ss_align;	/* force desired struct alignment */
+	char		__ss_pad2[_SS_PAD2SIZE];
+};
+#if !XASH_AMIGA
+struct timeval {long tv_sec;long tv_usec;};
+#endif
+const struct in6_addr in6addr_any, in6addr_loopback;
 #define AF_INET 0
+#define AF_INET6 1
+#define PF_INET 0
+#define PF_INET6 1
+#define AF_UNSPEC 0
 #define INADDR_BROADCAST 0
 #define INADDR_ANY 0
 //! Network to host conversion for a word.

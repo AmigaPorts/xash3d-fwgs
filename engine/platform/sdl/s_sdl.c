@@ -28,12 +28,16 @@ GNU General Public License for more details.
 
 #if ! SDL_VERSION_ATLEAST( 2, 0, 0 )
 #define SDL_GetCurrentAudioDriver() "legacysdl"
+#define SDL_GetAudioDeviceName( x, y ) "legacysdl"
 #define SDL_OpenAudioDevice( a, b, c, d, e ) SDL_OpenAudio( ( c ), ( d ) )
 #define SDL_CloseAudioDevice( a ) SDL_CloseAudio()
 #define SDL_PauseAudioDevice( a, b ) SDL_PauseAudio( ( b ) )
 #define SDL_LockAudioDevice( x ) SDL_LockAudio()
 #define SDL_UnlockAudioDevice( x ) SDL_UnlockAudio()
 #define SDLash_IsAudioError( x ) (( x ) != 0)
+#define SDL_AudioDeviceID int
+#define SDL_AudioFormat int
+#define SDL_zero(x) SDL_memset(&(x), 0, sizeof((x)))
 #else
 #define SDLash_IsAudioError( x ) (( x ) == 0)
 #endif
@@ -100,10 +104,12 @@ qboolean SNDDMA_Init( void )
 	SDL_AudioSpec desired, obtained;
 	int samplecount;
 
+#if SDL_VERSION_ATLEAST( 2, 0, 0 )
 	// even if we don't have PA
 	// we still can safely set env variables
 	SDL_setenv( "PULSE_PROP_application.name", GI->title, 1 );
 	SDL_setenv( "PULSE_PROP_media.role", "game", 1 );
+#endif
 
 	if( SDL_Init( SDL_INIT_AUDIO ))
 	{

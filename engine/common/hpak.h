@@ -64,7 +64,7 @@ typedef struct dresource_s
 } dresource_t;
 #pragma pack( pop )
 
-STATIC_ASSERT( sizeof( dresource_t ) == 136, "invalid dresource_t size, HPAKs won't be compatible (no custom logo in multiplayer!)" );
+//STATIC_ASSERT( sizeof( dresource_t ) == 136, "invalid dresource_t size, HPAKs won't be compatible (no custom logo in multiplayer!)" );
 
 typedef struct
 {

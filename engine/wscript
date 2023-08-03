@@ -45,6 +45,12 @@ def configure(conf):
 		conf.options.NO_ASYNC_RESOLVE = True
 		if not conf.check_cc( fragment='int main(){ int i = socket();}', lib = 'wattcpwl', mandatory=False ):
 			conf.define('XASH_NO_NETWORK',1)
+	elif conf.env.AMIGA:
+		conf.define('XASH_NO_NETWORK',1)
+		conf.define('XASH_SDL', 12)
+		conf.check_cfg(package='sdl', args='--cflags --libs', uselib_store='SDL2' )
+		conf.env.HAVE_SDL2 = True
+		conf.define('XASH_CRASHHANDLER', 0)
 	elif conf.env.DEST_OS == 'nswitch':
 		# re-enable undefined reference errors
 		conf.env.CXXFLAGS += ['-Wl,--no-undefined']

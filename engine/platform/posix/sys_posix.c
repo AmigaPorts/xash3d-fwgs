@@ -152,6 +152,11 @@ double Platform_DoubleTime( void )
 	struct timespec ts;
 #if XASH_IRIX
 	clock_gettime( CLOCK_SGI_CYCLE, &ts );
+#elif XASH_AMIGA
+	struct timeval tv;
+	gettimeofday (&tv, NULL);
+	ts.tv_sec = tv.tv_sec;
+	ts.tv_nsec = tv.tv_usec * 1000;
 #else
 	clock_gettime( CLOCK_MONOTONIC, &ts );
 #endif
