@@ -3131,21 +3131,32 @@ void CL_Init( void )
 	if( host.type == HOST_DEDICATED )
 		return; // nothing running on the client
 
+printf("----1!\n");
 	CL_InitLocal();
+printf("----2!\n");
 
 	VID_Init();	// init video
+printf("----3!\n");
+
 	S_Init();	// init sound
+printf("----4!\n");
+
 	Voice_Init( VOICE_DEFAULT_CODEC, 3 ); // init voice
+printf("----5!\n");
 
 	// unreliable buffer. unsed for unreliable commands and voice stream
 	MSG_Init( &cls.datagram, "cls.datagram", cls.datagram_buf, sizeof( cls.datagram_buf ));
+printf("----6!\n");
 
 	// IN_TouchInit();
 
 	COM_GetCommonLibraryPath( LIBRARY_CLIENT, libpath, sizeof( libpath ));
+	printf("----7!\n");
+
 
 	if( !CL_LoadProgs( libpath ) )
 		Host_Error( "can't initialize %s: %s\n", libpath, COM_GetLibraryError() );
+printf("----8!\n");
 
 	cls.initialized = true;
 	cl.maxclients = 1; // allow to drawing player in menu

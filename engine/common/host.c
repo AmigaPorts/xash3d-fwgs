@@ -1048,12 +1048,13 @@ void Host_InitCommon( int argc, char **argv, const char *progname, qboolean bCha
 	if( len && host.rootdir[len - 1] == '/' )
 		host.rootdir[len - 1] = 0;
 
+	printf("host.rootdir: %s\n", host.rootdir);
 	// get readonly root. The order is: check for arg, then env.
 	// if still not got it, rodir is disabled.
 	host.rodir[0] = '\0';
 	if( !Sys_GetParmFromCmdLine( "-rodir", host.rodir ))
 	{
-		char *roDir = getenv( "XASH3D_RODIR" );
+		char *roDir = "PROGDIR:";//getenv( "XASH3D_RODIR" );
 
 		if( COM_CheckString( roDir ))
 			Q_strncpy( host.rodir, roDir, sizeof( host.rodir ));
@@ -1155,6 +1156,7 @@ int EXPORT Host_Main( int argc, char **argv, const char *progname, int bChangeGa
 
 	Host_InitCommon( argc, argv, progname, bChangeGame );
 
+	printf("init common done!\n");
 	// init commands and vars
 	if( host_developer.value >= DEV_EXTENDED )
 	{
@@ -1178,10 +1180,16 @@ int EXPORT Host_Main( int argc, char **argv, const char *progname, int bChangeGa
 	Cvar_Getf( "host_ver", FCVAR_READ_ONLY, "detailed info about this build", "%i " XASH_VERSION " %s %s %s", Q_buildnum(), Q_buildos(), Q_buildarch(), Q_buildcommit());
 	Cvar_Getf( "host_lowmemorymode", FCVAR_READ_ONLY, "indicates if engine compiled for low RAM consumption (0 - normal, 1 - low engine limits, 2 - low protocol limits)", "%i", XASH_LOW_MEMORY );
 
+	printf("1!\n");
+
 	Mod_Init();
+	printf("2!\n");
 	NET_Init();
+	printf("3!\n");
 	NET_InitMasters();
+	printf("4!\n");
 	Netchan_Init();
+	printf("5!\n");
 
 	// allow to change game from the console
 	if( pChangeGame != NULL )
@@ -1194,11 +1202,16 @@ int EXPORT Host_Main( int argc, char **argv, const char *progname, int bChangeGa
 		Cvar_Get( "host_allow_changegame", "0", FCVAR_READ_ONLY, "allows to change games" );
 	}
 
+printf("6!\n");
 	SV_Init();
+	printf("7!\n");
 	CL_Init();
+	printf("8!\n");
 
 	HTTP_Init();
+	printf("9!\n");
 	ID_Init();
+	printf("10!\n");
 
 	if( Host_IsDedicated() )
 	{
@@ -1211,8 +1224,9 @@ int EXPORT Host_Main( int argc, char **argv, const char *progname, int bChangeGa
 	}
 	else Cmd_AddRestrictedCommand( "minimize", Host_Minimize_f, "minimize main window to tray" );
 
+printf("11!\n");
 	HPAK_CheckIntegrity( CUSTOM_RES_PATH );
-
+printf("12!\n");
 	host.errorframe = 0;
 
 	// post initializations
@@ -1224,12 +1238,15 @@ int EXPORT Host_Main( int argc, char **argv, const char *progname, int bChangeGa
 #endif
 		// execute startup config and cmdline
 		Cbuf_AddTextf( "exec %s.rc\n", SI.rcName );
+		printf("13!\n");
 		Cbuf_Execute();
+		printf("14!\n");
 		if( !host.config_executed )
 		{
 			Cbuf_AddText( "exec config.cfg\n" );
 			Cbuf_Execute();
 		}
+		printf("15!\n");
 		// exec all files from userconfig.d
 		Host_Userconfigd_f();
 		break;

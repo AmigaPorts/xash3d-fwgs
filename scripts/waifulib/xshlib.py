@@ -20,11 +20,11 @@ def options(opt):
 	opt.add_option('--static-linking', action='store', dest='STATIC_LINKING', default=None)
 
 def configure(conf):
-	if conf.options.STATIC_LINKING:
-		conf.find_program('ld')
-		conf.find_program('objcopy')
-		conf.env.STATIC_LINKING = conf.options.STATIC_LINKING
-		conf.add_os_flags('LD_RELOCATABLE_FLAGS')
+	#if conf.options.STATIC_LINKING:
+	conf.find_program('ld')
+	conf.find_program('objcopy')
+	conf.env.STATIC_LINKING = conf.options.STATIC_LINKING
+	conf.add_os_flags('LD_RELOCATABLE_FLAGS')
 
 def build(bld):
 	if bld.env.STATIC_LINKING:
@@ -40,7 +40,7 @@ class objcopy_relocatable_lib(Task.Task):
 class xshlib(ccroot.link_task):
 	"make relocatable library"
 	no_errcheck_out = True
-	run_str = '${LD} -r -o ${TGT[0].abspath()} ${LD_RELOCATABLE_FLAGS} ${CCLNK_SRC_F}${SRC}'
+	run_str = '${CC} -Wl,--unresolved-symbols=ignore-all -o ${TGT[0].abspath()} ${LD_RELOCATABLE_FLAGS} ${CCLNK_SRC_F}${SRC}'
 
 	def add_target(self, target):
 		"create objcopy task for target"

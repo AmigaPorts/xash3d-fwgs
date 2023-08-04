@@ -27,6 +27,9 @@ extern fs_globals_t *FI;
 #define FS_Gamedir() GI->gamefolder
 #define FS_Title()   GI->title
 
+
+extern int EXPORT GetFSAPI( int version, fs_api_t *api, fs_globals_t **globals, fs_interface_t *engfuncs );
+
 #define FS_InitStdio     (*g_fsapi.InitStdio)
 #define FS_ShutdownStdio (*g_fsapi.ShutdownStdio)
 

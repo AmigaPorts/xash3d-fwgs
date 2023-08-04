@@ -16,7 +16,7 @@ GNU General Public License for more details.
 #include "platform/platform.h"
 #include "library.h"
 #if XASH_LIB == LIB_STATIC
-#ifdef XASH_NO_LIBDL
+#if defined XASH_NO_LIBDL || XASH_AMIGA
 
 void *dlsym(void *handle, const char *symbol )
 {
@@ -55,7 +55,7 @@ typedef struct table_s
 } table_t;
 
 
-#include "generated_library_tables.h"
+//#include "generated_library_tables.h"
 
 static void *Lib_Find(table_t *tbl, const char *name )
 {
@@ -71,7 +71,7 @@ static void *Lib_Find(table_t *tbl, const char *name )
 
 void *COM_LoadLibrary( const char *dllname, int build_ordinals_table, qboolean directpath )
 {
-	return Lib_Find((table_t*)libs, dllname);
+	return (void*)1;//Lib_Find((table_t*)libs, dllname);
 }
 
 void COM_FreeLibrary( void *hInstance )

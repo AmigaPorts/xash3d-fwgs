@@ -3077,7 +3077,7 @@ TriAPI implementation
 TriRenderMode
 =================
 */
-void TriRenderMode( int mode )
+void TriRenderMode_( int mode )
 {
 	clgame.ds.renderMode = mode;
 	ref.dllFuncs.TriRenderMode( mode );
@@ -3088,7 +3088,7 @@ void TriRenderMode( int mode )
 TriColor4f
 =================
 */
-void TriColor4f( float r, float g, float b, float a )
+void TriColor4f_( float r, float g, float b, float a )
 {
 	if( clgame.ds.renderMode == kRenderTransAlpha )
 		ref.dllFuncs.Color4ub( r * 255.9f, g * 255.9f, b * 255.9f, a * 255.0f );
@@ -3105,7 +3105,7 @@ void TriColor4f( float r, float g, float b, float a )
 TriColor4ub
 =============
 */
-void TriColor4ub( byte r, byte g, byte b, byte a )
+void TriColor4ub_( byte r, byte g, byte b, byte a )
 {
 	clgame.ds.triRGBA[0] = r * (1.0f / 255.0f);
 	clgame.ds.triRGBA[1] = g * (1.0f / 255.0f);
@@ -3120,7 +3120,7 @@ void TriColor4ub( byte r, byte g, byte b, byte a )
 TriBrightness
 =============
 */
-void TriBrightness( float brightness )
+void TriBrightness_( float brightness )
 {
 	float	r, g, b;
 
@@ -3136,7 +3136,7 @@ void TriBrightness( float brightness )
 TriCullFace
 =============
 */
-void TriCullFace( TRICULLSTYLE style )
+void TriCullFace_( TRICULLSTYLE style )
 {
 	clgame.ds.cullMode = style;
 	ref.dllFuncs.CullFace( style );
@@ -3148,7 +3148,7 @@ TriWorldToScreen
 convert world coordinates (x,y,z) into screen (x, y)
 =============
 */
-int TriWorldToScreen( const float *world, float *screen )
+int TriWorldToScreen_( const float *world, float *screen )
 {
 	return ref.dllFuncs.WorldToScreen( world, screen );
 }
@@ -3208,7 +3208,7 @@ TriSpriteTexture
 bind current texture
 =============
 */
-int TriSpriteTexture( model_t *pSpriteModel, int frame )
+int TriSpriteTexture_( model_t *pSpriteModel, int frame )
 {
 	int	gl_texturenum;
 
@@ -3933,6 +3933,7 @@ qboolean CL_LoadProgs( const char *name )
 	clgame.client_dll_uses_sdl = true;
 #endif
 
+	printf("xxxxxxx1\n");
 	// NOTE: important stuff!
 	// vgui must startup BEFORE loading client.dll to avoid get error ERROR_NOACESS
 	// during LoadLibrary
@@ -3946,8 +3947,10 @@ qboolean CL_LoadProgs( const char *name )
 		GI->internal_vgui_support = true;
 	}
 
-	clgame.hInstance = COM_LoadLibrary( name, false, false );
+	printf("xxxxxxx2\n");
 
+	clgame.hInstance = COM_LoadLibrary( name, false, false );
+	printf("xxxxxxx3 %s\n", name);
 	if( !clgame.hInstance )
 		return false;
 

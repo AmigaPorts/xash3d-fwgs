@@ -233,12 +233,17 @@ void listdirectory( stringlist_t *list, const char *path )
 		stringlistappend( list, n_file.name );
 	_findclose( hFile );
 #else
-	if( !( dir = opendir( path ) ) )
+	if( !( dir = opendir( path ) ) ) {
+		printf("failed to open dir: %s\n", path);
+
 		return;
+	}
 
 	// iterate through the directory
-	while( ( entry = readdir( dir ) ))
+	while( ( entry = readdir( dir ) )) {
 		stringlistappend( list, entry->d_name );
+		//printf("list append: %s\n", entry->d_name);
+	}
 	closedir( dir );
 #endif
 
@@ -1206,7 +1211,7 @@ void FS_LoadGameInfo( const char *rootfolder )
 	fs_ext_path = false;
 
 	if( rootfolder ) Q_strncpy( fs_gamedir, rootfolder, sizeof( fs_gamedir ));
-	Con_Reportf( "FS_LoadGameInfo( %s )\n", fs_gamedir );
+	printf( "FS_LoadGameInfo( %s )\n", fs_gamedir );
 
 	// clear any old pathes
 	FS_ClearSearchPath();
@@ -1219,7 +1224,7 @@ void FS_LoadGameInfo( const char *rootfolder )
 	}
 
 	if( i == FI.numgames )
-		Sys_Error( "Couldn't find game directory '%s'\n", fs_gamedir );
+		Sys_Error( "Couldn't find game directory '%s' %d %d\n", fs_gamedir, i, FI.numgames );
 
 	FI.GameInfo = FI.games[i];
 
@@ -1449,7 +1454,7 @@ qboolean FS_InitStdio( qboolean unused_set_to_true, const char *rootdir, const c
 
 	// validate directories
 	stringlistinit( &dirs );
-	listdirectory( &dirs, "./" );
+	listdirectory( &dirs, "xash:" );
 	stringlistsort( &dirs );
 
 	for( i = 0; i < dirs.numstrings; i++ )
@@ -1473,7 +1478,7 @@ qboolean FS_InitStdio( qboolean unused_set_to_true, const char *rootdir, const c
 		Q_snprintf( buf, sizeof( buf ), "%s/", fs_rodir );
 		FS_AddGameDirectory( buf, FS_STATIC_PATH|FS_NOWRITE_PATH );
 	}
-	FS_AddGameDirectory( "./", FS_STATIC_PATH );
+	FS_AddGameDirectory( "xash:", FS_STATIC_PATH );
 
 	for( i = 0; i < dirs.numstrings; i++ )
 	{
@@ -1789,6 +1794,7 @@ int FS_SetCurrentDirectory( const char *path )
 		return false;
 	}
 #elif XASH_POSIX
+	printf("Changing directory to %s\n", path);
 	if( chdir( path ) < 0 )
 	{
 		Sys_Error( "Changing directory to %s failed: %s\n", path, strerror( errno ));
@@ -2005,7 +2011,7 @@ int FS_Flush( file_t *file )
 
 	// sync
 #if XASH_POSIX
-	if( fsync( file->handle ) < 0 )
+	//if( fsync( file->handle ) < 0 )
 		return EOF;
 #else
 	if( _commit( file->handle ) < 0 )

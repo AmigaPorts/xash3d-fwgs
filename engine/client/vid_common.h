@@ -41,5 +41,6 @@ void VID_SetDisplayTransform( int *render_w, int *render_h );
 void VID_CheckChanges( void );
 const char *VID_GetModeString( int vid_mode );
 void VID_StartupGamma( void );
+qboolean R_Init_( void );
 
 #endif // VID_COMMON

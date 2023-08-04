@@ -213,6 +213,7 @@ def configure(conf):
 		conf.options.SINGLE_BINARY    = True
 		conf.options.NO_ASYNC_RESOLVE = True
 		conf.define('XASH_SDLMAIN', 1)
+		conf.env.STATIC_LINKING = ""
 		enforce_pic = False
 	elif conf.env.DEST_OS == 'dos':
 		conf.options.SINGLE_BINARY = True

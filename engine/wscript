@@ -51,6 +51,8 @@ def configure(conf):
 		conf.check_cfg(package='sdl', args='--cflags --libs', uselib_store='SDL2' )
 		conf.env.HAVE_SDL2 = True
 		conf.define('XASH_CRASHHANDLER', 0)
+		conf.define('XASH_NO_LIBDL',1)
+		conf.env.STATIC = True
 	elif conf.env.DEST_OS == 'nswitch':
 		# re-enable undefined reference errors
 		conf.env.CXXFLAGS += ['-Wl,--no-undefined']
@@ -171,9 +173,9 @@ def build(bld):
 	if bld.get_define('XASH_CUSTOM_SWAP'):
 		source += bld.path.ant_glob(['platform/misc/kmalloc.c', 'platform/misc/sbrk.c'])
 
-	if bld.env.STATIC_LINKING:
-		source += bld.path.ant_glob(['platform/misc/lib_static.c'])
-		is_cxx_link = True
+	#if bld.env.STATIC_LINKING:
+	source += bld.path.ant_glob(['platform/misc/lib_static.c'])
+	is_cxx_link = True
 
 	if bld.env.HAVE_SDL2:
 		libs.append('SDL2')
@@ -218,7 +220,8 @@ def build(bld):
 			'-lSceVshBridge_stub',
 			'-lSceKernelDmacMgr_stub'
 		]
-
+	bld.env.CFLAGS += ['-DMINIZ_HEADER_FILE_ONLY']
+	bld.env.LDFLAGS += ['-Wl,--allow-multiple-definition']
 	# add client files
 	if not bld.env.DEDICATED:
 		source += bld.path.ant_glob([
@@ -226,6 +229,8 @@ def build(bld):
 			'client/vgui/*.c',
 			'client/avi/*.c'])
 		libs += ['opus']
+	libs += ['filesystem_stdio', 'menu', 'ref_soft']
+
 
 	includes = ['server', 'client', 'client/vgui' ]
 
@@ -245,15 +250,15 @@ def build(bld):
 			app_name = 'xash3d-fwgs'
 		)
 	else:
-		if bld.env.SINGLE_BINARY:
-			install_path = bld.env.BINDIR
-			program = 'cxxprogram' if is_cxx_link else 'cprogram'
-			if bld.env.STATIC:
-				program += '_static'
-			features = ['c', program]
-		else:
-			install_path = bld.env.LIBDIR
-			features = ['c', 'cxxshlib' if is_cxx_link else 'cshlib']
+		#if bld.env.SINGLE_BINARY:
+		install_path = bld.env.BINDIR
+		program = 'cxxprogram' if is_cxx_link else 'cprogram'
+		#if bld.env.STATIC:
+		program += '_static'
+		features = ['c', program]
+		#else:
+		#	install_path = bld.env.LIBDIR
+		#	features = ['c', 'cxxshlib' if is_cxx_link else 'cshlib']
 
 		bld(source   = source,
 			target   = 'xash',
