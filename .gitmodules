@@ -1,6 +1,6 @@
 [submodule "mainui"]
 	path = 3rdparty/mainui
-	url = https://github.com/MBeijer/mainui_cpp.git
+	url = https://github.com/AmigaPorts/mainui_cpp.git
 [submodule "ref_gl/nanogl"]
 	path = 3rdparty/nanogl
 	url = https://github.com/FWGS/nanogl
@@ -19,3 +19,6 @@
 [submodule "3rdparty/xash-extras"]
 	path = 3rdparty/extras/xash-extras
 	url = https://github.com/FWGS/xash-extras
+[submodule "hlsdk-portable"]
+	path = hlsdk-portable
+	url = ../hlsdk-portable
