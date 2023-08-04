@@ -67,6 +67,7 @@ SUBDIRS = [
 	Subproject('engine'),
 	Subproject('stub/server'),
 	Subproject('dllemu'),
+	Subproject('hlsdk-portable'),
 
 	# disable only by engine feature, makes no sense to even parse subprojects in dedicated mode
 	Subproject('3rdparty/extras',       lambda x: not x.env.DEDICATED and x.env.DEST_OS != 'android'),
