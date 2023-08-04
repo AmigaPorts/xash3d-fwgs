@@ -47,7 +47,9 @@ GNU General Public License for more details.
 			#include <vrtld.h>
 			#define O_BINARY 0
 		#else
-			#include <dlfcn.h>
+			#ifndef XASH_AMIGA
+				#include <dlfcn.h>
+			#endif
 			#define HAVE_DUP
 			#define O_BINARY 0
 		#endif

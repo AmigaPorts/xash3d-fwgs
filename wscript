@@ -406,6 +406,8 @@ def configure(conf):
 		else:
 			for i in a:
 				conf.check_cc(lib = i)
+	elif conf.env.AMIGA:
+		conf.check_cc(lib='m')
 	else:
 		conf.check_cc(lib='dl')
 		conf.check_cc(lib='m')
