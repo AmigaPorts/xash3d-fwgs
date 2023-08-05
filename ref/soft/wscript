@@ -32,21 +32,25 @@ def build(bld):
 	if bld.env.DEDICATED:
 		return
 
-	if bld.env.AMIGA:
-		bld.stlib(source   = bld.path.ant_glob(['*.c']),
-			target   = 'ref_soft',
-			features = 'c',
-			includes = '.',
-			use      = libs,
-			install_path = bld.env.LIBDIR,
-			subsystem = bld.env.MSVC_SUBSYSTEM
-		)
+	library = 'cshlib'
+	source = bld.path.ant_glob(['*.c'])
+
+	if bld.env.DEST_OS == 'amiga':
+		library = 'cprogram'
+		bld.env.POSTFIX = ".so"
+		source += bld.path.parent.ant_glob([
+			'os_specific/amiga/main.c'
+		])
 	else:
-		bld.shlib(source   = bld.path.ant_glob(['*.c']),
-			target   = 'ref_soft',
-			features = 'c',
-			includes = '.',
-			use      = libs,
-			install_path = bld.env.LIBDIR,
-			subsystem = bld.env.MSVC_SUBSYSTEM
-		)
+		bld.env.POSTFIX = ""
+
+	features = ['c', library]
+
+	bld(target = 'ref_soft' + bld.env.POSTFIX,
+		features = features,
+		source   = source,
+		includes = '.',
+		use      = libs,
+		install_path = bld.env.LIBDIR,
+		subsystem = bld.env.MSVC_SUBSYSTEM
+	)

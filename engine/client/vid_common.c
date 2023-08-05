@@ -230,5 +230,5 @@ void VID_Init( void )
 	// but supported mode list is filled by backends, so numbers are not portable any more
 	Cmd_AddRestrictedCommand( "vid_setmode", VID_Mode_f, "display video mode" );
 
-	R_Init_(); // init renderer
+	R_Init(); // init renderer
 }

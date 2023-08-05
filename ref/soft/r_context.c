@@ -300,11 +300,11 @@ void GAME_EXPORT GL_SetRenderMode(int mode)
 	/// TODO: table shading/blending???
 	/// maybe, setup block drawing function pointers here
 }
-/*
+
 void GAME_EXPORT R_ShowTextures( void )
 {
 	// textures undone too
-}*/
+}
 
 void GAME_EXPORT R_ShowTree( void )
 {
@@ -424,7 +424,7 @@ ref_interface_t gReffuncs =
 	CL_AddCustomBeam,
 	R_ProcessEntData,
 
-	NULL, //R_ShowTextures,
+	R_ShowTextures,
 
 	R_GetTextureOriginalBuffer,
 	GL_LoadTextureFromBuffer,

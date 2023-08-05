@@ -468,7 +468,7 @@ void R_ShowTree_r( mnode_t *node, float x, float y, float scale, int shownodes, 
 	world.recursion_level--;
 }
 
-void R_ShowTree_( void )
+void R_ShowTree( void )
 {
 	float	x = (float)((refState.width - (int)POINT_SIZE) >> 1);
 	float	y = NODE_INTERVAL_Y(1.0f);
@@ -536,7 +536,7 @@ void V_PostRender( void )
 		CL_DrawDemoRecording();
 		CL_DrawHUD( CL_CHANGELEVEL );
 		ref.dllFuncs.R_ShowTextures();
-		R_ShowTree_();
+		R_ShowTree();
 		Con_DrawConsole();
 		UI_UpdateMenu( host.realtime );
 		Con_DrawVersion();

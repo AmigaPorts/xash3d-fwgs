@@ -21,9 +21,7 @@ GNU General Public License for more details.
 #include "platform/platform.h"
 
 fs_api_t g_fsapi;
-
 fs_globals_t *FI;
-
 
 static HINSTANCE fs_hInstance;
 
@@ -75,7 +73,6 @@ static void FS_UnloadProgs( void )
 
 qboolean FS_LoadProgs( void )
 {
-	/*
 	const char *name = FILESYSTEM_STDIO_DLL;
 	FSAPI GetFSAPI;
 
@@ -100,18 +97,6 @@ qboolean FS_LoadProgs( void )
 		Host_Error( "FS_LoadProgs: can't initialize filesystem API: wrong version\n" );
 		return false;
 	}
-	*/
-
-	if( !GetFSAPI( FS_API_VERSION, &g_fsapi, &FI, &fs_memfuncs ))
-	{
-		FS_UnloadProgs();
-		Host_Error( "FS_LoadProgs: can't initialize filesystem API: wrong version\n" );
-		return false;
-	}
-	
-	
-
-
 
 	Con_DPrintf( "FS_LoadProgs: filesystem_stdio successfully loaded\n" );
 

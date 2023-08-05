@@ -67,7 +67,6 @@ SUBDIRS = [
 	Subproject('engine'),
 	Subproject('stub/server'),
 	Subproject('dllemu'),
-	Subproject('hlsdk-portable'),
 
 	# disable only by engine feature, makes no sense to even parse subprojects in dedicated mode
 	Subproject('3rdparty/extras',       lambda x: not x.env.DEDICATED and x.env.DEST_OS != 'android'),
@@ -102,7 +101,7 @@ REFDLLS = [
 ]
 
 def options(opt):
-	opt.load('reconfigure compiler_optimizations xshlib xcompile sdl2 compiler_cxx compiler_c clang_compilation_database strip_on_install waf_unit_test msdev msvs msvc subproject cmake')
+	opt.load('reconfigure compiler_optimizations xshlib xcompile compiler_cxx compiler_c sdl2 clang_compilation_database strip_on_install waf_unit_test msdev msvs msvc subproject cmake')
 
 	grp = opt.add_option_group('Common options')
 
@@ -214,7 +213,6 @@ def configure(conf):
 		conf.options.SINGLE_BINARY    = True
 		conf.options.NO_ASYNC_RESOLVE = True
 		conf.define('XASH_SDLMAIN', 1)
-		conf.env.STATIC_LINKING = ""
 		enforce_pic = False
 	elif conf.env.DEST_OS == 'dos':
 		conf.options.SINGLE_BINARY = True
@@ -259,10 +257,6 @@ def configure(conf):
 		linkflags.remove('-Wl,--no-undefined')
 		conf.env.append_unique('LINKFLAGS_cshlib', ['-nostdlib', '-nostartfiles'])
 		conf.env.append_unique('LINKFLAGS_cxxshlib', ['-nostdlib', '-nostartfiles'])
-	# same on the vita
-	elif conf.env.AMIGA:
-		conf.env.append_unique('CFLAGS_cshlib', ['-D_inline=inline'])
-		conf.env.append_unique('CXXFLAGS_cxxshlib', ['-D_inline=inline'])
 	# same on the vita
 	elif conf.env.DEST_OS == 'psvita':
 		conf.env.append_unique('CFLAGS_cshlib', ['-fPIC'])
@@ -407,8 +401,6 @@ def configure(conf):
 		else:
 			for i in a:
 				conf.check_cc(lib = i)
-	elif conf.env.AMIGA:
-		conf.check_cc(lib='m')
 	else:
 		conf.check_cc(lib='dl')
 		conf.check_cc(lib='m')

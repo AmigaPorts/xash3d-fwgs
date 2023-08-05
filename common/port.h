@@ -24,9 +24,6 @@ GNU General Public License for more details.
 		#include <sys/syslimits.h>
 		#define OS_LIB_EXT "dylib"
 		#define OPEN_COMMAND "open"
-	#elif XASH_AMIGA
-		#define OS_LIB_EXT ".library"
-		#define OPEN_COMMAND "xdg-open"
 	#else
 		#define OS_LIB_EXT "so"
 		#define OPEN_COMMAND "xdg-open"
@@ -50,10 +47,7 @@ GNU General Public License for more details.
 			#include <vrtld.h>
 			#define O_BINARY 0
 		#else
-			#if !XASH_AMIGA
-				// Amiga is almost compatible with POSIX fns but has its own dynamic library mechanism
-				#include <dlfcn.h>
-			#endif
+			#include <dlfcn.h>
 			#define HAVE_DUP
 			#define O_BINARY 0
 		#endif

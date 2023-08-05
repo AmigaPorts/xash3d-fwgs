@@ -653,18 +653,6 @@ def patch_compiler_c_configure(conf):
 setattr(compiler_cxx, 'configure', patch_compiler_cxx_configure)
 setattr(compiler_c, 'configure', patch_compiler_c_configure)
 
-#@TaskGen.feature('cshlib', 'cxxshlib', 'dshlib', 'fcshlib', 'vnum')
-#@TaskGen.after_method('apply_link', 'propagate_uselib_vars')
-#def apply_static_stuff(self):
-#	"""
-#	Enforce SONAME on Android
-#	"""
-#	link = self.link_task
-#	node = link.outputs[0]
-#
-#	link.add_target(node.name)
-
-
 @TaskGen.feature('cshlib', 'cxxshlib', 'dshlib', 'fcshlib', 'vnum')
 @TaskGen.after_method('apply_link', 'propagate_uselib_vars')
 @TaskGen.before_method('apply_vnum')
@@ -672,7 +660,6 @@ def apply_android_soname(self):
 	"""
 	Enforce SONAME on Android
 	"""
-
 	if self.env.DEST_OS != 'android':
 		return
 

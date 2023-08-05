@@ -214,7 +214,6 @@ const char *COM_NameForFunction( void *hInstance, void *function )
 #ifndef XASH_AMIGA
 		Dl_info info = {0};
 		dladdr( (void*)function, &info );
-
 		if( info.dli_sname )
 			return COM_GetPlatformNeutralName( info.dli_sname );
 #else

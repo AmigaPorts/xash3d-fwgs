@@ -2410,7 +2410,7 @@ byte *FS_LoadFile( const char *path, fs_offset_t *filesizeptr, qboolean gamediro
 	return NULL;
 }
 
-qboolean CRC32_File( dword *crcvalue, const char *filename )
+qboolean CRC32_File( uint32_t *crcvalue, const char *filename )
 {
 	char	buffer[1024];
 	int	num_bytes;

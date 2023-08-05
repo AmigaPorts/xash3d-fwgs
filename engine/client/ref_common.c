@@ -17,7 +17,7 @@ CVAR_DEFINE_AUTO( gl_clear, "0", FCVAR_ARCHIVE, "clearing screen after each fram
 CVAR_DEFINE_AUTO( r_showtree, "0", FCVAR_ARCHIVE, "build the graph of visible BSP tree" );
 static CVAR_DEFINE_AUTO( r_refdll, "", FCVAR_RENDERINFO, "choose renderer implementation, if supported" );
 
-void R_GetTextureParms_( int *w, int *h, int texnum )
+void R_GetTextureParms( int *w, int *h, int texnum )
 {
 	if( w ) *w = REF_GET_PARM( PARM_TEX_WIDTH, texnum );
 	if( h ) *h = REF_GET_PARM( PARM_TEX_HEIGHT, texnum );
@@ -413,27 +413,24 @@ static void CL_FillTriAPIFromRef( triangleapi_t *dst, const ref_interface_t *src
 	dst->FogParams         = src->FogParams;
 }
 
-extern int EXPORT GAME_EXPORT GetRefAPI( int version, ref_interface_t *funcs, ref_api_t *engfuncs, ref_globals_t *globals );
-
 static qboolean R_LoadProgs( const char *name )
 {
 	extern triangleapi_t gTriApi;
 	static ref_api_t gpEngfuncs;
-	//REFAPI GetRefAPI; // single export
+	REFAPI GetRefAPI; // single export
 
 	if( ref.hInstance ) R_UnloadProgs();
 
 	FS_AllowDirectPaths( true );
-	/*
 	if( !(ref.hInstance = COM_LoadLibrary( name, false, true ) ))
 	{
 		FS_AllowDirectPaths( false );
 		Con_Reportf( "R_LoadProgs: can't load renderer library %s: %s\n", name, COM_GetLibraryError() );
 		return false;
 	}
-*/
+
 	FS_AllowDirectPaths( false );
-/*
+
 	if( !( GetRefAPI = (REFAPI)COM_GetProcAddress( ref.hInstance, GET_REF_API )) )
 	{
 		COM_FreeLibrary( ref.hInstance );
@@ -441,7 +438,7 @@ static qboolean R_LoadProgs( const char *name )
 		ref.hInstance = NULL;
 		return false;
 	}
-*/
+
 	// make local copy of engfuncs to prevent overwrite it with user dll
 	memcpy( &gpEngfuncs, &gEngfuncs, sizeof( gpEngfuncs ));
 
@@ -472,7 +469,7 @@ static qboolean R_LoadProgs( const char *name )
 	return true;
 }
 
-void R_Shutdown_( void )
+void R_Shutdown( void )
 {
 	int i;
 	model_t *mod;
@@ -529,7 +526,7 @@ static qboolean R_LoadRenderer( const char *refopt )
 
 	if( !R_LoadProgs( refdll ))
 	{
-		R_Shutdown_();
+		R_Shutdown();
 		Sys_Warn( S_ERROR "Can't initialize %s renderer!\n", refdll );
 		return false;
 	}
@@ -616,7 +613,7 @@ static void R_CollectRendererNames( void )
 	ref.readableNames = readableNames;
 }
 
-qboolean R_Init_( void )
+qboolean R_Init( void )
 {
 	qboolean success = false;
 	string requested;

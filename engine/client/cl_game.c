@@ -3933,7 +3933,6 @@ qboolean CL_LoadProgs( const char *name )
 	clgame.client_dll_uses_sdl = true;
 #endif
 
-	printf("xxxxxxx1\n");
 	// NOTE: important stuff!
 	// vgui must startup BEFORE loading client.dll to avoid get error ERROR_NOACESS
 	// during LoadLibrary
@@ -3947,10 +3946,8 @@ qboolean CL_LoadProgs( const char *name )
 		GI->internal_vgui_support = true;
 	}
 
-	printf("xxxxxxx2\n");
-
 	clgame.hInstance = COM_LoadLibrary( name, false, false );
-	printf("xxxxxxx3 %s\n", name);
+
 	if( !clgame.hInstance )
 		return false;
 
@@ -3969,7 +3966,6 @@ qboolean CL_LoadProgs( const char *name )
 
 		printf("xxxxxxx5\n");
 
-/*
 	// trying to get single export
 	if(( GetClientAPI = (void *)COM_GetProcAddress( clgame.hInstance, "GetClientAPI" )) != NULL )
 	{
@@ -3985,9 +3981,7 @@ qboolean CL_LoadProgs( const char *name )
 		// trying to fill interface now
 		CL_GetSecuredClientAPI( GetClientAPI );
 	}
-*/
-	CL_GetSecuredClientAPI( GetClientAPI );
-printf("yo!\n");
+
 	if ( GetClientAPI != NULL )
 	{
 		// check critical functions again

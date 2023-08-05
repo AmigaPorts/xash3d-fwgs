@@ -8,6 +8,10 @@
 #include <port.h>
 #endif
 
+#if XASH_AMIGA
+#include <port.h>
+#endif
+
 #if XASH_WIN32
 #include <wchar.h> // off_t
 #endif // _WIN32
