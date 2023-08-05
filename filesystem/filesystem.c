@@ -1132,6 +1132,7 @@ void FS_AddGameHierarchy( const char *dir, uint flags )
 			dir = FI.games[i]->gamefolder; // fixup directory case
 
 			Con_Reportf( "FS_AddGameHierarchy: adding recursive basedir %s\n", FI.games[i]->basedir );
+
 			if( !FI.games[i]->added && Q_stricmp( FI.games[i]->gamefolder, FI.games[i]->basedir ))
 			{
 				FI.games[i]->added = true;

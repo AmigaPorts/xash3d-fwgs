@@ -565,7 +565,7 @@ void SCR_LoadCreditsFont( void )
 	if( !CRC32_File( &crc, "gfx.wad" ) || crc == 0x49eb9f16 )
 	{
 		string charsetFnt;
-
+		printf("LoadCreditsFont1\n");
 		if( Q_snprintf( charsetFnt, sizeof( charsetFnt ),
 			"creditsfont_%s.fnt", Cvar_VariableString( "con_charset" )) > 0 )
 		{
@@ -574,11 +574,16 @@ void SCR_LoadCreditsFont( void )
 		}
 	}
 
+		printf("LoadCreditsFont2\n");
+
 	if( !success )
 		success = Con_LoadVariableWidthFont( "gfx/creditsfont.fnt", font, scale, kRenderTransAdd, TF_FONT );
+		printf("LoadCreditsFont3\n");
 
 	if( !success )
 		success = Con_LoadFixedWidthFont( "gfx/conchars", font, scale, kRenderTransAdd, TF_FONT );
+
+		printf("LoadCreditsFont4\n");
 
 	// copy font size for client.dll
 	if( success )

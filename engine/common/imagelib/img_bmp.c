@@ -41,6 +41,16 @@ qboolean Image_LoadBMP( const char *name, const byte *buffer, fs_offset_t filesi
 
 	buf_p = (byte *)buffer;
 	memcpy( &bhdr, buf_p, sizeof( bmp_t ));
+	LittleLongSW(bhdr.fileSize);
+	LittleLongSW(bhdr.bitmapDataOffset);
+	LittleLongSW(bhdr.bitmapHeaderSize);
+	LittleLongSW(bhdr.width);
+	LittleLongSW(bhdr.height);
+	LittleShortSW(bhdr.planes);
+	LittleShortSW(bhdr.bitsPerPixel);
+	LittleLongSW(bhdr.compression);
+	LittleLongSW(bhdr.bitmapDataSize);
+	LittleLongSW(bhdr.colors);
 	buf_p += BI_FILE_HEADER_SIZE + bhdr.bitmapHeaderSize;
 
 	// bogus file header check
@@ -388,7 +398,19 @@ qboolean Image_SaveBMP( const char *name, rgbdata_t *pix )
 	hdr.colors = ( pixel_size == 1 ) ? 256 : 0;
 	hdr.importantColors = 0;
 
+#ifdef XASH_BIG_ENDIAN
+	LittleLongSW(hdr.fileSize);
+	LittleLongSW(hdr.bitmapDataOffset);
+	LittleLongSW(hdr.bitmapHeaderSize);
+	LittleLongSW(hdr.width);
+	LittleLongSW(hdr.height);
+	LittleShortSW(hdr.planes);
+	LittleShortSW(hdr.bitsPerPixel);
+	LittleLongSW(hdr.compression);
+	LittleLongSW(hdr.bitmapDataSize);
+	LittleLongSW(hdr.colors);
 	FS_Write( pfile, &hdr, sizeof( bmp_t ));
+#endif
 
 	pbBmpBits = Mem_Malloc( host.imagepool, cbBmpBits );
 

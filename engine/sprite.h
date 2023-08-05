@@ -28,6 +28,27 @@ SPRITE MODELS
 .spr extended version (Half-Life compatible sprites with some Xash3D extensions)
 ==============================================================================
 */
+#ifdef XASH_BIG_ENDIAN
+#define BYTE_SWAP_INT8(x) (x) /* no need to swap bytes for 8 bit numbers */
+#define BYTE_SWAP_INT16(data) \
+( (((data) >> 8) & 0x00FF) | (((data) << 8) & 0xFF00) ) 
+
+#define BYTE_SWAP_INT32(data)   \
+( (((data) >> 24) & 0x000000FF) | (((data) >>  8) & 0x0000FF00) | \
+  (((data) <<  8) & 0x00FF0000) | (((data) << 24) & 0xFF000000) ) 
+
+#define BYTE_SWAP_INT64(data)   \
+( (((data) >> 56) & 0x00000000000000FF) | (((data) >> 40) & 0x000000000000FF00) | \
+  (((data) >> 24) & 0x0000000000FF0000) | (((data) >>  8) & 0x00000000FF000000) | \
+  (((data) <<  8) & 0x000000FF00000000) | (((data) << 24) & 0x0000FF0000000000) | \
+  (((data) << 40) & 0x00FF000000000000) | (((data) << 56) & 0xFF00000000000000) ) 
+#else
+#define BYTE_SWAP_INT8(x) (x)
+#define BYTE_SWAP_INT16(x) (x)
+#define BYTE_SWAP_INT32(x) (x)
+#define BYTE_SWAP_INT64(x) (x)
+#endif
+
 
 #define IDSPRITEHEADER	(('P'<<24)+('S'<<16)+('D'<<8)+'I')	// little-endian "IDSP"
 

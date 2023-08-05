@@ -29,11 +29,14 @@ GNU General Public License for more details.
 #include "common/com_strings.h"
 #include "miniz.h"
 
-#define ZIP_HEADER_LF      (('K'<<8)+('P')+(0x03<<16)+(0x04<<24))
+
+#define ZIP_HEADER_LF      LittleLong(('K'<<8)+('P')+(0x03<<16)+(0x04<<24))
 #define ZIP_HEADER_SPANNED ((0x08<<24)+(0x07<<16)+('K'<<8)+'P')
 
 #define ZIP_HEADER_CDF ((0x02<<24)+(0x01<<16)+('K'<<8)+'P')
-#define ZIP_HEADER_EOCD ((0x06<<24)+(0x05<<16)+('K'<<8)+'P')
+#define ZIP_HEADER_EOCD LittleLong((0x06<<24)+(0x05<<16)+('K'<<8)+'P')
+
+
 
 #define ZIP_COMPRESSION_NO_COMPRESSION	    0
 #define ZIP_COMPRESSION_DEFLATED	    8
@@ -232,6 +235,7 @@ static zip_t *FS_LoadZip( const char *zipfile, int *error )
 	lseek( zip->handle, 0, SEEK_SET );
 
 	c = read( zip->handle, &signature, sizeof( signature ) );
+	//LittleLongSW(signature);
 
 	if( c != sizeof( signature ) || signature == ZIP_HEADER_EOCD )
 	{
@@ -243,6 +247,7 @@ static zip_t *FS_LoadZip( const char *zipfile, int *error )
 		FS_CloseZIP( zip );
 		return NULL;
 	}
+
 
 	if( signature != ZIP_HEADER_LF )
 	{
@@ -283,6 +288,13 @@ static zip_t *FS_LoadZip( const char *zipfile, int *error )
 
 	c = read( zip->handle, &header_eocd, sizeof( header_eocd ) );
 
+	LittleShortSW(header_eocd.disk_number);
+	LittleShortSW(header_eocd.start_disk_number);
+	LittleShortSW(header_eocd.number_central_directory_record);
+	LittleShortSW(header_eocd.total_central_directory_record);
+	LittleLongSW(header_eocd.size_of_central_directory);
+	LittleLongSW(header_eocd.central_directory_offset);
+	LittleShortSW(header_eocd.commentary_len);
 	if( c != sizeof( header_eocd ))
 	{
 		Con_Reportf( S_ERROR "invalid EOCD header in %s. Zip file corrupted.\n", zipfile );
@@ -303,6 +315,24 @@ static zip_t *FS_LoadZip( const char *zipfile, int *error )
 	for( i = 0; i < header_eocd.total_central_directory_record; i++ )
 	{
 		c = read( zip->handle, &header_cdf, sizeof( header_cdf ) );
+
+		LittleLongSW(header_cdf.signature);
+		LittleShortSW(header_cdf.version);
+		LittleShortSW(header_cdf.version_need);
+		LittleShortSW(header_cdf.generalPurposeBitFlag);
+		LittleShortSW(header_cdf.flags);
+		LittleShortSW(header_cdf.modification_time);
+		LittleShortSW(header_cdf.modification_date);
+		LittleLongSW(header_cdf.crc32);
+		LittleLongSW(header_cdf.compressed_size);
+		LittleLongSW(header_cdf.uncompressed_size);
+		LittleShortSW(header_cdf.filename_len);
+		LittleShortSW(header_cdf.extrafield_len);
+		LittleShortSW(header_cdf.file_commentary_len);
+		LittleShortSW(header_cdf.disk_start);
+		LittleShortSW(header_cdf.internal_attr);
+		LittleLongSW(header_cdf.external_attr);
+		LittleLongSW(header_cdf.local_header_offset);
 
 		if( c != sizeof( header_cdf ) || header_cdf.signature != ZIP_HEADER_CDF )
 		{
@@ -357,6 +387,7 @@ static zip_t *FS_LoadZip( const char *zipfile, int *error )
 
 		lseek( zip->handle, info[i].offset, SEEK_SET );
 		c = read( zip->handle, &header, sizeof( header ) );
+		
 
 		if( c != sizeof( header ))
 		{
@@ -370,8 +401,8 @@ static zip_t *FS_LoadZip( const char *zipfile, int *error )
 			return NULL;
 		}
 
-		info[i].flags = header.compression_flags;
-		info[i].offset = info[i].offset + header.filename_len + header.extrafield_len + sizeof( header );
+		info[i].flags = LittleShort(header.compression_flags);
+		info[i].offset = info[i].offset + LittleShort(header.filename_len) + LittleShort(header.extrafield_len) + sizeof( header );
 	}
 
 	zip->filetime = FS_SysFileTime( zipfile );

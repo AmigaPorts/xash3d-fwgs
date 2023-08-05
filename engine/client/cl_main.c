@@ -3141,7 +3141,7 @@ printf("----3!\n");
 	S_Init();	// init sound
 printf("----4!\n");
 
-	Voice_Init( VOICE_DEFAULT_CODEC, 3 ); // init voice
+	//Voice_Init( VOICE_DEFAULT_CODEC, 3 ); // init voice
 printf("----5!\n");
 
 	// unreliable buffer. unsed for unreliable commands and voice stream

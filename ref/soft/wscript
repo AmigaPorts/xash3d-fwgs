@@ -38,15 +38,18 @@ def build(bld):
 	if bld.env.DEST_OS == 'amiga':
 		library = 'cprogram'
 		bld.env.POSTFIX = ".so"
-		source += bld.path.parent.ant_glob([
+		bld.env.PREFIX = "lib"
+
+		source += bld.path.parent.parent.ant_glob([
 			'os_specific/amiga/main.c'
 		])
 	else:
 		bld.env.POSTFIX = ""
+		bld.env.PREFIX = ""
 
 	features = ['c', library]
 
-	bld(target = 'ref_soft' + bld.env.POSTFIX,
+	bld(target = bld.env.PREFIX + 'ref_soft' + bld.env.POSTFIX,
 		features = features,
 		source   = source,
 		includes = '.',

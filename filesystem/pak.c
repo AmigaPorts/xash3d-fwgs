@@ -17,6 +17,7 @@ GNU General Public License for more details.
 */
 
 #include "build.h"
+#include "xash3d_types.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -115,6 +116,11 @@ static pack_t *FS_LoadPackPAK( const char *packfile, int *error )
 
 	c = read( packhandle, (void *)&header, sizeof( header ));
 
+	LittleLongSW(header.ident);
+	LittleLongSW(header.dirlen);
+	LittleLongSW(header.dirofs);
+	
+	
 	if( c != sizeof( header ) || header.ident != IDPACKV1HEADER )
 	{
 		Con_Reportf( "%s is not a packfile. Ignored.\n", packfile );
@@ -194,7 +200,7 @@ static file_t *FS_OpenFile_PAK( searchpath_t *search, const char *filename, cons
 
 	pfile = &search->pack->files[pack_ind];
 
-	return FS_OpenHandle( search->filename, search->pack->handle, pfile->filepos, pfile->filelen );
+	return FS_OpenHandle( search->filename, search->pack->handle, (pfile->filepos), (pfile->filelen) );
 }
 
 /*

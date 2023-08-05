@@ -345,7 +345,7 @@ static wfile_t *W_Open( const char *filename, int *error )
 		return NULL;
 	}
 
-	lumpcount = header.numlumps;
+	lumpcount = LittleLong(header.numlumps);
 
 	if( lumpcount >= MAX_FILES_IN_WAD )
 	{
@@ -361,7 +361,7 @@ static wfile_t *W_Open( const char *filename, int *error )
 	}
 	else if( error ) *error = WAD_LOAD_OK;
 
-	wad->infotableofs = header.infotableofs; // save infotableofs position
+	wad->infotableofs = LittleLong(header.infotableofs); // save infotableofs position
 
 	if( FS_Seek( wad->handle, wad->infotableofs, SEEK_SET ) == -1 )
 	{
@@ -397,6 +397,9 @@ static wfile_t *W_Open( const char *filename, int *error )
 
 		// cleanup lumpname
 		Q_strnlwr( srclumps[i].name, name, sizeof( srclumps[i].name ));
+		LittleLongSW(srclumps[i].filepos);
+		LittleLongSW(srclumps[i].disksize);
+		LittleLongSW(srclumps[i].size);
 
 		// check for '*' symbol issues (quake1)
 		k = Q_strlen( Q_strrchr( name, '*' ));
@@ -606,17 +609,17 @@ static byte *W_ReadLump( searchpath_t *search, const char *path, int pack_ind, f
 
 	oldpos = FS_Tell( wad->handle ); // don't forget restore original position
 
-	if( FS_Seek( wad->handle, lump->filepos, SEEK_SET ) == -1 )
+	if( FS_Seek( wad->handle, (lump->filepos), SEEK_SET ) == -1 )
 	{
 		Con_Reportf( S_ERROR "W_ReadLump: %s is corrupted\n", lump->name );
 		FS_Seek( wad->handle, oldpos, SEEK_SET );
 		return NULL;
 	}
 
-	buf = (byte *)Mem_Malloc( wad->mempool, lump->disksize );
-	size = FS_Read( wad->handle, buf, lump->disksize );
+	buf = (byte *)Mem_Malloc( wad->mempool, (lump->disksize) );
+	size = FS_Read( wad->handle, buf, (lump->disksize) );
 
-	if( size < lump->disksize )
+	if( size < (lump->disksize) )
 	{
 		Con_Reportf( S_WARN "W_ReadLump: %s is probably corrupted\n", lump->name );
 		FS_Seek( wad->handle, oldpos, SEEK_SET );
@@ -624,7 +627,7 @@ static byte *W_ReadLump( searchpath_t *search, const char *path, int pack_ind, f
 		return NULL;
 	}
 
-	if( lumpsizeptr ) *lumpsizeptr = lump->disksize;
+	if( lumpsizeptr ) *lumpsizeptr = (lump->disksize);
 	FS_Seek( wad->handle, oldpos, SEEK_SET );
 
 	return buf;

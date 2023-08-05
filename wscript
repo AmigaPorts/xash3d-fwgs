@@ -263,6 +263,10 @@ def configure(conf):
 		conf.env.append_unique('CXXFLAGS_cxxshlib', ['-fPIC', '-fno-use-cxa-atexit'])
 		conf.env.append_unique('LINKFLAGS_cshlib', ['-nostdlib', '-Wl,--unresolved-symbols=ignore-all'])
 		conf.env.append_unique('LINKFLAGS_cxxshlib', ['-nostdlib', '-Wl,--unresolved-symbols=ignore-all'])
+	elif conf.env.DEST_OS == 'amiga':
+		linkflags.append('-L/opt/m68k-amigaos/usr/lib')
+		cflags.append('-I/opt/m68k-amigaos/usr/include')
+		cxxflags.append('-I/opt/m68k-amigaos/usr/include')
 	# check if we need to use irix linkflags
 	elif conf.env.DEST_OS == 'irix' and conf.env.COMPILER_CC == 'gcc':
 		linkflags.remove('-Wl,--no-undefined')

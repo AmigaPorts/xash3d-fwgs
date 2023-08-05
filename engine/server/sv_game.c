@@ -876,6 +876,10 @@ void SV_WriteEntityPatch( const char *filename )
 	memset( buf, 0, MAX_TOKEN );
 	FS_Read( f, buf, MAX_TOKEN );
 	header = (dheader_t *)buf;
+	#ifdef XASH_BIG_ENDIAN
+		for (int i=0 ; i<sizeof(dheader_t)/4 ; i++)
+			LittleLongSW(((int *)header)[i]);
+	#endif
 
 	// check all the lumps and some other errors
 	if( !Mod_TestBmodelLumps( f, bspfilename, buf, true, &entities ))

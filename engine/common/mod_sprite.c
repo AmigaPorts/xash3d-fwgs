@@ -41,9 +41,9 @@ void Mod_LoadSpriteModel( model_t *mod, const void *buffer, qboolean *loaded, ui
 	if( loaded ) *loaded = false;
 	pin = (dsprite_t *)buffer;
 	mod->type = mod_sprite;
-	i = pin->version;
+	i = BYTE_SWAP_INT32(pin->version);
 
-	if( pin->ident != IDSPRITEHEADER )
+	if( pin->ident != BYTE_SWAP_INT32(IDSPRITEHEADER) )
 	{
 		Con_DPrintf( S_ERROR "%s has wrong id (%x should be %x)\n", mod->name, pin->ident, IDSPRITEHEADER );
 		return;
@@ -61,6 +61,13 @@ void Mod_LoadSpriteModel( model_t *mod, const void *buffer, qboolean *loaded, ui
 	if( i == SPRITE_VERSION_Q1 || i == SPRITE_VERSION_32 )
 	{
 		pinq1 = (dsprite_q1_t *)buffer;
+		pinq1->numframes = BYTE_SWAP_INT32(pinq1->numframes);
+		//pinq1->boundingradius = BYTE_SWAP_INT32(pinq1->boundingradius);
+		pinq1->synctype = BYTE_SWAP_INT32(pinq1->synctype);
+		pinq1->type = BYTE_SWAP_INT32(pinq1->type);
+		pinq1->bounds[0] = BYTE_SWAP_INT32(pinq1->bounds[0]);
+		pinq1->bounds[1] = BYTE_SWAP_INT32(pinq1->bounds[1]);
+
 		size = sizeof( msprite_t ) + ( pinq1->numframes - 1 ) * sizeof( psprite->frames );
 		psprite = Mem_Calloc( mod->mempool, size );
 		mod->cache.data = psprite;	// make link to extradata
@@ -85,6 +92,15 @@ void Mod_LoadSpriteModel( model_t *mod, const void *buffer, qboolean *loaded, ui
 	else // if( i == SPRITE_VERSION_HL )
 	{
 		pinhl = (dsprite_hl_t *)buffer;
+		pinhl->numframes = BYTE_SWAP_INT32(pinhl->numframes);
+		pinhl->boundingradius = BYTE_SWAP_INT32(pinhl->boundingradius);
+		pinhl->synctype = BYTE_SWAP_INT32(pinhl->synctype);
+		pinhl->type = BYTE_SWAP_INT32(pinhl->type);
+		pinhl->texFormat = BYTE_SWAP_INT32(pinhl->texFormat);
+		pinhl->facetype = BYTE_SWAP_INT32(pinhl->facetype);
+		pinhl->bounds[0] = BYTE_SWAP_INT32(pinhl->bounds[0]);
+		pinhl->bounds[1] = BYTE_SWAP_INT32(pinhl->bounds[1]);
+
 		size = sizeof( msprite_t ) + ( pinhl->numframes - 1 ) * sizeof( psprite->frames );
 		psprite = Mem_Calloc( mod->mempool, size );
 		mod->cache.data = psprite;	// make link to extradata

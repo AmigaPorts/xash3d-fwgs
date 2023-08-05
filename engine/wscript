@@ -227,7 +227,7 @@ def build(bld):
 			'client/avi/*.c'])
 		libs += ['opus']
 
-	includes = ['server', 'client', 'client/vgui' ]
+	includes = ['server', 'client', 'client/vgui', '../public']
 
 	# Switch and PSVita have custom parameters
 	if bld.env.DEST_OS in ['nswitch', 'psvita']:

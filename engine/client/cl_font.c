@@ -30,18 +30,22 @@ static int CL_LoadFontTexture( const char *fontname, uint texFlags, int *width )
 
 	if( !g_fsapi.FileExists( fontname, false ))
 		return 0;
+printf("CL_LoadFontTexture1\n");
 
 	tex = ref.dllFuncs.GL_LoadTexture( fontname, NULL, 0, texFlags );
 	if( !tex )
 		return 0;
+printf("CL_LoadFontTexture2\n");
 
 	font_width = REF_GET_PARM( PARM_TEX_WIDTH, tex );
+printf("CL_LoadFontTexture3\n");
+
 	if( !font_width )
 	{
 		ref.dllFuncs.GL_FreeTexture( tex );
 		return 0;
 	}
-
+printf("CL_LoadFontTexture4 %d\n", font_width);
 	*width = font_width;
 	return tex;
 }
@@ -50,12 +54,15 @@ qboolean Con_LoadFixedWidthFont( const char *fontname, cl_font_t *font, float sc
 {
 	int font_width, i;
 
+printf("Con_LoadFixedWidthFont1\n");
 	if( font->valid )
 		return true; // already loaded
+printf("Con_LoadFixedWidthFont2\n");
 
 	font->hFontTexture = CL_LoadFontTexture( fontname, texFlags, &font_width );
 	if( !font->hFontTexture )
 		return false;
+printf("Con_LoadFixedWidthFont3\n");
 
 	font->type = FONT_FIXED;
 	font->valid = true;

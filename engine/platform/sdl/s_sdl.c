@@ -104,6 +104,9 @@ qboolean SNDDMA_Init( void )
 	SDL_AudioSpec desired, obtained;
 	int samplecount;
 
+
+return true;
+	
 #if SDL_VERSION_ATLEAST( 2, 0, 0 )
 	// even if we don't have PA
 	// we still can safely set env variables
@@ -124,6 +127,9 @@ qboolean SNDDMA_Init( void )
 	desired.channels = 2;
 	desired.callback = SDL_SoundCallback;
 
+	Con_Printf( "Couldn't open SDL audio: %d\n", desired.freq );
+
+
 	sdl_dev = SDL_OpenAudioDevice( NULL, 0, &desired, &obtained, 0 );
 
 	if( SDLash_IsAudioError( sdl_dev ))
@@ -132,7 +138,7 @@ qboolean SNDDMA_Init( void )
 		return false;
 	}
 
-	if( obtained.format != AUDIO_S16LSB )
+	if( obtained.format != AUDIO_S16LSB && obtained.format != AUDIO_S16MSB )
 	{
 		Con_Printf( "SDL audio format %d unsupported.\n", obtained.format );
 		goto fail;

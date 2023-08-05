@@ -33,8 +33,10 @@ infotable	dlumpinfo_t[dwadinfo_t->numlumps]
 ========================================================================
 */
 
-#define IDWAD2HEADER	(('2'<<24)+('D'<<16)+('A'<<8)+'W')	// little-endian "WAD2" quake wads
-#define IDWAD3HEADER	(('3'<<24)+('D'<<16)+('A'<<8)+'W')	// little-endian "WAD3" half-life wads
+#include "xash3d_types.h"
+
+#define IDWAD2HEADER	LittleLong(('2'<<24)+('D'<<16)+('A'<<8)+'W')	// little-endian "WAD2" quake wads
+#define IDWAD3HEADER	LittleLong(('3'<<24)+('D'<<16)+('A'<<8)+'W')	// little-endian "WAD3" half-life wads
 
 // dlumpinfo_t->attribs
 #define ATTR_NONE		0	// allow to read-write

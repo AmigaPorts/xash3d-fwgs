@@ -914,6 +914,8 @@ void Host_InitCommon( int argc, char **argv, const char *progname, qboolean bCha
 				developer = bound( DEV_NONE, abs( Q_atoi( dev_level )), DEV_EXTENDED );
 		}
 	}
+	//TODO: TEMP
+	developer = DEV_EXTENDED;
 
 #if XASH_ENGINE_TESTS
 	if( Sys_CheckParm( "-runtests" ))
@@ -1255,13 +1257,20 @@ printf("12!\n");
 		host.stuffcmds_pending = true;
 		break;
 	}
+		printf("16!\n");
 
 	host.change_game = false;	// done
 	Cmd_RemoveCommand( "setgl" );
+			printf("17!\n");
+
 	Cbuf_ExecStuffCmds();	// execute stuffcmds (commandline)
+			printf("18!\n");
+
 	SCR_CheckStartupVids();	// must be last
+		printf("19!\n");
 
 	oldtime = Sys_DoubleTime() - 0.1;
+		printf("20!\n");
 
 	if( Host_IsDedicated( ))
 	{
@@ -1277,6 +1286,8 @@ printf("12!\n");
 		Cbuf_AddTextf( "exec %s\n", Cvar_VariableString( "servercfgfile" ));
 		Cbuf_Execute();
 	}
+
+		printf("21!\n");
 
 	// main window message loop
 	while( !host.crashed )
