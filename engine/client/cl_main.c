@@ -3134,9 +3134,7 @@ void CL_Init( void )
 	CL_InitLocal();
 
 	VID_Init();	// init video
-
-	S_Init();	// init sound
-
+	//S_Init();	// init sound
 	//Voice_Init( VOICE_DEFAULT_CODEC, 3 ); // init voice
 
 	// unreliable buffer. unsed for unreliable commands and voice stream

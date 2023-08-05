@@ -51,7 +51,7 @@ void SDLash_Init( void )
 #ifndef SDL_INIT_EVENTS
 #define SDL_INIT_EVENTS 0
 #endif
-	if( SDL_Init( SDL_INIT_TIMER | SDL_INIT_VIDEO | SDL_INIT_EVENTS ) )
+	if( SDL_Init( SDL_INIT_TIMER | SDL_INIT_VIDEO | SDL_INIT_EVENTS | SDL_INIT_EVERYTHING ) )
 	{
 		Sys_Warn( "SDL_Init failed: %s", SDL_GetError() );
 		host.type = HOST_DEDICATED;

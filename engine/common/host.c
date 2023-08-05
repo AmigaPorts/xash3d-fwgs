@@ -1055,7 +1055,12 @@ void Host_InitCommon( int argc, char **argv, const char *progname, qboolean bCha
 	host.rodir[0] = '\0';
 	if( !Sys_GetParmFromCmdLine( "-rodir", host.rodir ))
 	{
-		char *roDir = "PROGDIR:";//getenv( "XASH3D_RODIR" );
+		char *roDir = 
+		#ifdef __AMIGA__
+			"PROGDIR:";
+		#else
+			getenv( "XASH3D_RODIR" );
+		#endif
 
 		if( COM_CheckString( roDir ))
 			Q_strncpy( host.rodir, roDir, sizeof( host.rodir ));

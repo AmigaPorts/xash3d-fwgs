@@ -56,6 +56,11 @@ static const dframetype_t *R_SpriteLoadFrame( model_t *mod, const void *pin, msp
 
 	memcpy( &pinframe, pin, sizeof(dspriteframe_t));
 
+	//LittleLongSW(pinframe.width);
+	//LittleLongSW(pinframe.height);
+	//LittleLongSW(pinframe.origin[0]);
+	//LittleLongSW(pinframe.origin[1]);
+
 	if( sprite_version == SPRITE_VERSION_32 )
 		bytes = 4;
 

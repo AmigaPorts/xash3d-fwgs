@@ -1451,7 +1451,13 @@ qboolean FS_InitStdio( qboolean unused_set_to_true, const char *rootdir, const c
 
 	// validate directories
 	stringlistinit( &dirs );
-	listdirectory( &dirs, "xash:" );
+	listdirectory( &dirs, 
+		#ifdef __AMIGA__
+			"xash:" 
+		#else
+			"./"
+		#endif
+	);
 	stringlistsort( &dirs );
 
 	for( i = 0; i < dirs.numstrings; i++ )
@@ -1475,7 +1481,13 @@ qboolean FS_InitStdio( qboolean unused_set_to_true, const char *rootdir, const c
 		Q_snprintf( buf, sizeof( buf ), "%s/", fs_rodir );
 		FS_AddGameDirectory( buf, FS_STATIC_PATH|FS_NOWRITE_PATH );
 	}
-	FS_AddGameDirectory( "xash:", FS_STATIC_PATH );
+	FS_AddGameDirectory( 
+		#ifdef __AMIGA__
+			"xash:" 
+		#else
+			"./"
+		#endif
+		, FS_STATIC_PATH );
 
 	for( i = 0; i < dirs.numstrings; i++ )
 	{

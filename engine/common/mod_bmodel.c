@@ -372,6 +372,9 @@ static void Mod_LoadLump( const byte *in, mlumpinfo_t *info, mlumpstat_t *stat, 
 		l = &header->lumps[info->lumpnumber];
 	}
 
+	LittleLongSW(l->filelen);
+	LittleLongSW(l->fileofs);
+
 	// lump is unused by engine for some reasons ?
 	if( !l || info->entrysize <= 0 || info->maxcount <= 0 )
 		return;

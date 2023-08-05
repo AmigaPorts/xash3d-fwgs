@@ -103,9 +103,6 @@ qboolean SNDDMA_Init( void )
 {
 	SDL_AudioSpec desired, obtained;
 	int samplecount;
-
-
-return true;
 	
 #if SDL_VERSION_ATLEAST( 2, 0, 0 )
 	// even if we don't have PA
