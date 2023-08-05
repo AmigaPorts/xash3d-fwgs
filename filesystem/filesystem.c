@@ -233,17 +233,13 @@ void listdirectory( stringlist_t *list, const char *path )
 		stringlistappend( list, n_file.name );
 	_findclose( hFile );
 #else
-	if( !( dir = opendir( path ) ) ) {
-		printf("failed to open dir: %s\n", path);
-
+	if( !( dir = opendir( path ) ) )
 		return;
-	}
 
 	// iterate through the directory
-	while( ( entry = readdir( dir ) )) {
+	while( ( entry = readdir( dir ) ))
 		stringlistappend( list, entry->d_name );
-		//printf("list append: %s\n", entry->d_name);
-	}
+
 	closedir( dir );
 #endif
 
@@ -1795,7 +1791,6 @@ int FS_SetCurrentDirectory( const char *path )
 		return false;
 	}
 #elif XASH_POSIX
-	printf("Changing directory to %s\n", path);
 	if( chdir( path ) < 0 )
 	{
 		Sys_Error( "Changing directory to %s failed: %s\n", path, strerror( errno ));

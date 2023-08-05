@@ -414,12 +414,9 @@ void CL_GetSecuredClientAPI( CL_EXPORT_FUNCS F )
 		NULL,
 		(void *)&cldllFuncDst
 	};
-		printf("GetSecuredClient\n");
-
 
 	// trying to fill interface now
 	F( &cldllFuncSrc );
-		printf("GetSecuredClient2\n");
 
 	// map exports to xash's cldll_func_t
 	clgame.dllFuncs.pfnInitialize = cldllFuncSrc.pfnInitialize;
@@ -463,6 +460,4 @@ void CL_GetSecuredClientAPI( CL_EXPORT_FUNCS F )
 	clgame.dllFuncs.pfnDirectorMessage = cldllFuncSrc.pfnDirectorMessage;
 	clgame.dllFuncs.pfnGetStudioModelInterface = cldllFuncSrc.pfnGetStudioModelInterface;
 	clgame.dllFuncs.pfnChatInputPosition = cldllFuncSrc.pfnChatInputPosition;
-			printf("GetSecuredClient3\n");
-
 }

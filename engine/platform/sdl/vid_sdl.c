@@ -137,7 +137,6 @@ qboolean SW_CreateBuffer( int width, int height, uint *stride, uint *bpp, uint *
 		*g = sw.win->format->Gmask;
 		*b = sw.win->format->Bmask;
 
-		printf("bpp: %d, %d, %d, %d\n", sw.win->format->BytesPerPixel, sw.win->format->Rmask, sw.win->format->Gmask, sw.win->format->Bmask);
 		*stride = sw.win->pitch / sw.win->format->BytesPerPixel;
 
 		/// TODO: check somehow if ref_soft can handle native format

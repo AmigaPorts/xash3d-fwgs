@@ -3957,14 +3957,9 @@ qboolean CL_LoadProgs( const char *name )
 		VGui_Startup( refState.width, refState.height );
 	}
 
-		printf("xxxxxxx4\n");
-
-
 	// clear exports
 	for( func = cdll_exports; func && func->name; func++ )
 		*func->func = NULL;
-
-		printf("xxxxxxx5\n");
 
 	// trying to get single export
 	if(( GetClientAPI = (void *)COM_GetProcAddress( clgame.hInstance, "GetClientAPI" )) != NULL )

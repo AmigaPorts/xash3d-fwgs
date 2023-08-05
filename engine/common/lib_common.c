@@ -155,7 +155,6 @@ static void COM_GenerateClientLibraryPath( const char *name, char *out, size_t s
 	Q_snprintf( dllpath, sizeof( dllpath ), "%s/%s", GI->dll_path, name );
 
 	COM_GenerateCommonLibraryName( dllpath, OS_LIB_EXT, out, size );
-	printf("%s\n", out);
 #endif
 }
 
