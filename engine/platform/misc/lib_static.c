@@ -71,7 +71,7 @@ static void *Lib_Find(table_t *tbl, const char *name )
 
 void *COM_LoadLibrary( const char *dllname, int build_ordinals_table, qboolean directpath )
 {
-	return (void*)1;//Lib_Find((table_t*)libs, dllname);
+	return (void*)NULL;//Lib_Find((table_t*)libs, dllname);
 }
 
 void COM_FreeLibrary( void *hInstance )
