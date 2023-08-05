@@ -437,7 +437,7 @@ void *R_StudioGetAnim( studiohdr_t *m_pStudioHeader, model_t *m_pSubModel, mstud
 
 		buf = FS_LoadFile( filepath, &filesize, false );
 		if( !buf || !filesize ) Host_Error( "StudioGetAnim: can't load %s\n", filepath );
-		if( IDSEQGRPHEADER != *(uint *)buf ) Host_Error( "StudioGetAnim: %s is corrupted\n", filepath );
+		if( IDSEQGRPHEADER != LittleLong(*(uint *)buf) ) Host_Error( "StudioGetAnim: %s is corrupted\n", filepath );
 
 		Con_Printf( "loading: %s\n", filepath );
 
@@ -667,6 +667,274 @@ static void Mod_StudioAccumulateBoneVerts( vec3_t mins, vec3_t maxs, int *numver
 	*numbones = 0;
 }
 
+#ifdef XASH_BIG_ENDIAN
+
+// swap all fields in ibuffer starting given field (4byte type)
+#define SWAP_INTS(type, startfield) \
+for( i = offsetof(type, startfield)/4; i < sizeof(type)/4; i++ ) \
+	LittleLongSW(ibuffer[i])
+
+// swap all fields in sbuffer starting given field (2byte type)
+#define SWAP_SHORTS(type, startfield) \
+for( i = offsetof(type, startfield)/2; i < sizeof(type)/2; i++ ) \
+	LittleShortSW(sbuffer[i])
+
+/*
+=========================
+Mod_StudioBigEndian
+Swap all model fields for big endian system
+=========================
+*/
+void Mod_StudioBigEndian( model_t *model, byte *buffer )
+{
+	/*
+	studiohdr_t	*phdr = (studiohdr_t*)buffer;
+	int *ibuffer = buffer;
+	short *sbuffer;
+	int i,j,k, bodyCount = 0;
+	mstudiomodel_t *pSubModel;
+
+	if( LittleLong(phdr->ident) != IDSTUDIOHEADER )
+		return;
+
+	LittleLongSW(phdr->ident);
+	LittleLongSW(phdr->length);
+
+	SWAP_INTS(studiohdr_t,eyeposition);
+
+	for( j = 0; j < phdr->numbones; j++ )
+	{
+		ibuffer = (byte*)phdr + phdr->boneindex + sizeof(mstudiobone_t) * j;
+		SWAP_INTS(mstudiobone_t,parent);
+	}
+
+	for( j = 0; j < phdr->numbonecontrollers; j++ )
+	{
+		ibuffer = (byte*)phdr + phdr->bonecontrollerindex + sizeof(mstudiobonecontroller_t) * j;
+		SWAP_INTS(mstudiobonecontroller_t,bone);
+	}
+
+	for( j = 0; j < phdr->numhitboxes; j++ )
+	{
+		ibuffer = (byte*)phdr + phdr->hitboxindex + sizeof(mstudiobbox_t) * j;
+		SWAP_INTS(mstudiobbox_t,bone);
+	}
+
+	for( j = 0; j < phdr->numtextures; j++ )
+	{
+		ibuffer = (byte*)phdr + phdr->textureindex + sizeof(mstudiotexture_t) * j;
+		SWAP_INTS(mstudiotexture_t,flags);
+	}
+
+
+	for( j = 0; j < phdr->numseq; j++ )
+	{
+		mstudioseqdesc_t *pseqdesc = (byte*)phdr + phdr->seqindex + sizeof(mstudioseqdesc_t) * j;
+		mstudioanim_t *panim;//, *panimend;
+		int m;
+
+		ibuffer = (byte*)phdr + phdr->seqindex + sizeof(mstudioseqdesc_t) * j;
+		SWAP_INTS(mstudioseqdesc_t,fps);
+
+		for( k = 0; k < pseqdesc->numpivots; k++ )
+		{
+			ibuffer = (byte*)phdr + pseqdesc->pivotindex +  sizeof(mstudiopivot_t) * j;
+			SWAP_INTS(mstudiopivot_t,org);
+		}
+
+		// preload and swap external seqgroups
+		if( pseqdesc->seqgroup )
+		{
+			mstudioseqgroup_t	*pseqgroup;
+			fs_offset_t		filesize;
+			byte		*buf;
+			cache_user_t	*paSequences;
+
+			if( !model )
+				continue; // not loading model
+
+			pseqgroup = (mstudioseqgroup_t *)((byte *)phdr + phdr->seqgroupindex) + pseqdesc->seqgroup;
+
+			paSequences = (cache_user_t *)model->submodels;
+			if( paSequences == NULL )
+			{
+				paSequences = (cache_user_t *)Mem_Alloc( com_studiocache, MAXSTUDIOGROUPS * sizeof( cache_user_t ));
+				model->submodels = (void *)paSequences;
+			}
+
+			// check for already loaded
+			if( !paSequences[pseqdesc->seqgroup].data )
+			{
+				string	filepath, modelname, modelpath;
+
+				FS_FileBase( model->name, modelname );
+				FS_ExtractFilePath( model->name, modelpath );
+
+				// NOTE: here we build real sub-animation filename because stupid user may rename model without recompile
+				Q_snprintf( filepath, sizeof( filepath ), "%s/%s%i%i.mdl", modelpath, modelname, pseqdesc->seqgroup / 10, pseqdesc->seqgroup % 10 );
+
+				buf = FS_LoadFile( filepath, &filesize, false );
+				if( !buf || !filesize )
+					Host_Error( "StudioGetAnim: can't load %s\n", filepath );
+				else if( IDSEQGRPHEADER != LittleLong(*(uint *)buf ))
+					Host_Error( "StudioGetAnim: %s is corrupted\n", filepath );
+
+				MsgDev( D_INFO, "loading: %s\n", filepath );
+
+				paSequences[pseqdesc->seqgroup].data = Mem_Alloc( com_studiocache, filesize );
+				Q_memcpy( paSequences[pseqdesc->seqgroup].data, buf, (size_t)filesize );
+				Mem_Free( buf );
+			}
+
+			panim = (mstudioanim_t *)((byte *)paSequences[pseqdesc->seqgroup].data + pseqdesc->animindex);
+			//panimend = (mstudioanim_t *)((byte *)paSequences[pseqdesc->seqgroup].data + filesize);
+		}
+		else
+		{
+			panim = (byte*)phdr + pseqdesc->animindex;
+			//panimend = pseqdesc;
+		}
+
+		// swap animations
+		for( m = 0; m < phdr->numbones * pseqdesc->numblends; m++ )
+		{
+
+			sbuffer = panim;
+			SWAP_SHORTS(mstudioanim_t,offset);
+			for( k = 0; k < 6; k++ )
+			{
+				if(panim->offset[k])
+				{
+					int frame;
+					byte swapped[512] = {0};
+
+					// swap animvalues only single time
+#define TRYSWAP(x) if(!swapped[&x - panimvalue2])  \
+				{ \
+					LittleShortSW(x.value); \
+					swapped[&x - panimvalue2] = true; \
+				}
+					mstudioanimvalue_t *panimvalue2 = (((byte*)panim) + panim->offset[k]);
+					mstudioanimvalue_t *panimvalue;
+
+					// run all frames to process all animvalues
+					for( frame = 0; frame < pseqdesc->numframes - 1 || frame == 0; frame++ )
+					{
+						int f = frame;
+						panimvalue = panimvalue2;
+
+						// debug
+						if( panimvalue->num.total < panimvalue->num.valid )
+							f = 0;
+
+						// find span of values that includes the frame we want
+						while( panimvalue->num.total <= f )
+						{
+							f -= panimvalue->num.total;
+							panimvalue += panimvalue->num.valid + 1;
+
+							// debug
+							if( panimvalue->num.total < panimvalue->num.valid )
+								f = 0;
+						}
+
+						// if we're inside the span
+						if( panimvalue->num.valid > f )
+						{
+							// and there's more data in the span
+							if( panimvalue->num.valid > f + 1 )
+							{
+								TRYSWAP(panimvalue[f+1]);
+								TRYSWAP(panimvalue[f+2]);
+							}
+
+							else
+								TRYSWAP(panimvalue[f+1]);
+						}
+						else
+						{
+							// are we at the end of the repeating values section and there's another section with data?
+							if( panimvalue->num.total <= f + 1 )
+							{
+								TRYSWAP(panimvalue[panimvalue->num.valid]);
+								TRYSWAP(panimvalue[panimvalue->num.valid+2]);
+
+
+							}
+							else TRYSWAP(panimvalue[panimvalue->num.valid]);
+						}
+					}
+#undef TRYSWAP
+				}
+			}
+
+			panim++;
+		}
+
+	}
+
+	for( j = 0; j < phdr->numseqgroups; j++ )
+	{
+		ibuffer = (byte*)phdr + phdr->seqgroupindex + sizeof(mstudioseqgroup_t) * j;
+		SWAP_INTS(mstudioseqgroup_t,data);
+	}
+
+	for( j = 0; j < phdr->numbodyparts; j++ )
+	{
+		int index;
+
+		mstudiobodyparts_t *pbodypart = (mstudiobodyparts_t *)((byte *)phdr + phdr->bodypartindex) + j;
+		ibuffer = pbodypart;
+		SWAP_INTS(mstudiobodyparts_t,nummodels);
+		bodyCount += pbodypart->nummodels;
+
+		for( k = 0; k < pbodypart->nummodels; k++ )
+		{
+			int *vindex;
+			int m;
+
+			pSubModel = (mstudiomodel_t *)((byte *)phdr + pbodypart->modelindex) + k;
+			ibuffer = pSubModel;
+			SWAP_INTS(mstudiomodel_t, type);
+
+			vindex = (float *)((byte *)phdr + pSubModel->vertindex);
+
+			for( m = 0; m < pSubModel->numverts * 3; m++ )
+				LittleLongSW(vindex[m]);
+
+			vindex = (float *)((byte *)phdr + pSubModel->normindex);
+
+			for( m = 0; m < pSubModel->numnorms * 3; m++ )
+				LittleLongSW(vindex[m]);
+
+			// swap tri commands
+			for( m = 0; m < pSubModel->nummesh; m++ )
+			{
+				mstudiomesh_t *pmesh = ibuffer = ((byte *)phdr + pSubModel->meshindex + sizeof(mstudiomesh_t) * m);
+				SWAP_INTS(mstudiomesh_t,numtris);
+
+				sbuffer =  (short *)((byte *)phdr + pmesh->triindex);
+				while( i = LittleShort(*sbuffer) )
+				{
+					LittleShortSW(*sbuffer);
+					sbuffer++;
+					i = abs(i) * 4;
+					for( ; i > 0; i--, sbuffer++ )
+						LittleShortSW(*sbuffer);
+				}
+			}
+		}
+	}
+
+	for( j = 0; j < phdr->numattachments; j++ )
+	{
+		ibuffer = (byte*)phdr + phdr->attachmentindex + sizeof(mstudioattachment_t) * j;
+		SWAP_INTS(mstudioattachment_t,type);
+	}
+	*/
+}
+#endif
+
 /*
 ====================
 StudioComputeBounds
@@ -696,6 +964,9 @@ void Mod_StudioComputeBounds( void *buffer, vec3_t mins, vec3_t maxs, qboolean i
 
 	// Get the body part portion of the model
 	pstudiohdr = (studiohdr_t *)buffer;
+#ifdef XASH_BIG_ENDIAN
+	Mod_StudioBigEndian( NULL, buffer );
+#endif
 	pbodypart = (mstudiobodyparts_t *)((byte *)pstudiohdr + pstudiohdr->bodypartindex);
 
 	// each body part has nummodels variations so there are as many total variations as there
@@ -759,7 +1030,7 @@ qboolean Mod_GetStudioBounds( const char *name, vec3_t mins, vec3_t maxs )
 	f = FS_LoadFile( name, NULL, false );
 	if( !f ) return false;
 
-	if( *(uint *)f == IDSTUDIOHEADER )
+	if( LittleLong(*(uint *)f) == IDSTUDIOHEADER )
 	{
 		VectorClear( mins );
 		VectorClear( maxs );
@@ -830,6 +1101,36 @@ static studiohdr_t *R_StudioLoadHeader( model_t *mod, const void *buffer )
 
 	pin = (byte *)buffer;
 	phdr = (studiohdr_t *)pin;
+	LittleLongSW(phdr->version);
+	LittleLongSW(phdr->ident);
+	LittleLongSW(phdr->length);
+	LittleLongSW(phdr->flags);
+	LittleLongSW(phdr->numbones);
+	LittleLongSW(phdr->boneindex);
+	LittleLongSW(phdr->numbonecontrollers);
+	LittleLongSW(phdr->bonecontrollerindex);
+	LittleLongSW(phdr->numhitboxes);
+	LittleLongSW(phdr->hitboxindex);
+	LittleLongSW(phdr->numseq);
+	LittleLongSW(phdr->seqindex);
+	LittleLongSW(phdr->numseqgroups);
+	LittleLongSW(phdr->seqgroupindex);
+	LittleLongSW(phdr->numtextures);
+	LittleLongSW(phdr->textureindex);
+	LittleLongSW(phdr->texturedataindex);
+	LittleLongSW(phdr->numskinref);
+	LittleLongSW(phdr->numskinfamilies);
+	LittleLongSW(phdr->skinindex);
+	LittleLongSW(phdr->numbodyparts);
+	LittleLongSW(phdr->bodypartindex);
+	LittleLongSW(phdr->numattachments);
+	LittleLongSW(phdr->attachmentindex);
+	LittleLongSW(phdr->studiohdr2index);
+	LittleLongSW(phdr->unused);
+	LittleLongSW(phdr->unused2);
+	LittleLongSW(phdr->unused3);
+	LittleLongSW(phdr->numtransitions);
+	LittleLongSW(phdr->transitionindex);
 	i = phdr->version;
 
 	if( i != STUDIO_VERSION )

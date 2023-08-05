@@ -1614,9 +1614,23 @@ static void Mod_SetupSubmodels( dbspmodel_t *bmod )
 		// counting a real number of clipnodes per each submodel
 		CountClipNodes_r( mod->hulls[0].clipnodes, &mod->hulls[0], bm->headnode[0] );
 
+		for( j = 0; j < 3; j++ )
+		{
+			// spread the mins / maxs by a pixel
+			bm->mins[j] = LittleFloat(bm->mins[j]) - 1.0f;
+			bm->maxs[j] = LittleFloat(bm->maxs[j]) + 1.0f;
+			bm->origin[j] = LittleFloat(bm->origin[j]);
+		}
+
 		// but hulls1-3 is build individually for a each given submodel
-		for( j = 1; j < MAX_MAP_HULLS; j++ )
+		for( j = 1; j < MAX_MAP_HULLS; j++ ) {
+			LittleLongSW(bm->headnode[j]);
 			Mod_SetupHull( bmod, mod, mempool, bm->headnode[j], j );
+		}
+
+		LittleLongSW(bm->visleafs);
+		LittleLongSW(bm->firstface);
+		LittleLongSW(bm->numfaces);
 
 		mod->firstmodelsurface = bm->firstface;
 		mod->nummodelsurfaces = bm->numfaces;

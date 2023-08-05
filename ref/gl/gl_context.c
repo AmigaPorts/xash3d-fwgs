@@ -141,7 +141,7 @@ qboolean Mod_ProcessRenderData( model_t *mod, qboolean create, const byte *buf )
 		switch( mod->type )
 		{
 			case mod_studio:
-				// Mod_LoadStudioModel( mod, buf, loaded );
+				Mod_LoadStudioModel( mod, buf, &loaded );
 				break;
 			case mod_sprite:
 				Mod_LoadSpriteModel( mod, buf, &loaded, mod->numtexinfo );
