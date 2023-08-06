@@ -841,11 +841,12 @@ qboolean CRC32_MapFile( dword *crcvalue, const char *filename, qboolean multipla
 	header = (dheader_t *)headbuf;
 
 	// invalid version ?
-	switch( header->version )
+	switch( LittleLong(header->version) )
 	{
 	case Q1BSP_VERSION:
 	case HLBSP_VERSION:
 	case QBSP2_VERSION:
+		printf("bps version!\n");
 		break;
 	default:
 		FS_Close( f );

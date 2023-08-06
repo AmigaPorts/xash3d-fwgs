@@ -554,9 +554,15 @@ def configure(conf):
 		conf.env.LIBPATH_MAGX  = [toolchain_path + i for i in ['ezx-z6/lib', 'qt-2.3.8/lib']]
 		conf.env.LINKFLAGS_MAGX = ['-Wl,-rpath-link=' + i for i in conf.env.LIBPATH_MAGX]
 	elif conf.options.AMIGA:
-		conf.env.CFLAGS += ['-noixemul', '-m68040', '-mhard-float', '-Wno-strict-aliasing', '-fbbb=-']
-		conf.env.CXXFLAGS += ['-noixemul', '-m68040', '-mhard-float', '-Wno-strict-aliasing', '-fbbb=-']
-		conf.env.LDFLAGS = ['-noixemul', '-m68040', '-mhard-float', '-Wno-strict-aliasing', '-fbbb=-']
+		conf.env.CFLAGS += ['-noixemul', '-m68040', '-mhard-float', '-Wno-strict-aliasing'
+		#, '-fbbb=-'
+		]
+		conf.env.CXXFLAGS += ['-noixemul', '-m68040', '-mhard-float', '-Wno-strict-aliasing'
+		#, '-fbbb=-'
+		]
+		conf.env.LDFLAGS = ['-noixemul', '-m68040', '-mhard-float', '-Wno-strict-aliasing'
+		#, '-fbbb=-'
+		]
 		conf.msg("Amiga:" , True)
 	elif conf.options.MSVC_WINE:
 		try:

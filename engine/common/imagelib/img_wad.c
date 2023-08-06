@@ -80,6 +80,7 @@ qboolean Image_LoadFNT( const char *name, const byte *buffer, fs_offset_t filesi
 	const byte	*pal, *fin;
 	size_t		size;
 	int		numcolors;
+	int i;
 
 	if( image.hint == IL_HINT_Q1 )
 		return false; // Quake1 doesn't have qfonts
@@ -94,7 +95,7 @@ qboolean Image_LoadFNT( const char *name, const byte *buffer, fs_offset_t filesi
 	LittleLongSW(font.width);
 	LittleLongSW(font.rowcount);
 	LittleLongSW(font.rowheight);
-	for(int i = 0; i < NUM_GLYPHS;i++)
+	for(i = 0; i < NUM_GLYPHS;i++)
 	{
 		LittleShortSW(font.fontinfo[i].charwidth);
 		LittleShortSW(font.fontinfo[i].startoffset);
@@ -167,7 +168,6 @@ qboolean Image_LoadMDL( const char *name, const byte *buffer, fs_offset_t filesi
 	int		flags;
 
 	pin = (mstudiotexture_t *)buffer;
-	
 
 #ifdef XASH_BIG_ENDIAN
 	LittleLongSW(pin->flags);
@@ -180,6 +180,7 @@ qboolean Image_LoadMDL( const char *name, const byte *buffer, fs_offset_t filesi
 	image.width = pin->width;
 	image.height = pin->height;
 	pixels = image.width * image.height;
+
 	fin = (byte *)g_mdltexdata;
 	ASSERT(fin);
 	g_mdltexdata = NULL;
@@ -405,7 +406,7 @@ qboolean Image_LoadMIP( const char *name, const byte *buffer, fs_offset_t filesi
 	memcpy( ofs, mip.offsets, sizeof( ofs ));
 	for( i = 0; i < 4; i++ )
 		ofs[i] = LittleLong(mip.offsets[i]);
-	
+
 	pixels = image.width * image.height;
 
 	if( image.hint != IL_HINT_Q1 && filesize >= (int)sizeof(mip) + ((pixels * 85)>>6) + sizeof(short) + 768)

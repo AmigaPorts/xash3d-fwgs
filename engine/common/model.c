@@ -289,22 +289,27 @@ model_t *Mod_LoadModel( model_t *mod, qboolean crash )
 	mod->type = mod_bad;
 	loadmodel = mod;
 
+printf("loadmap1\n");
 	// call the apropriate loader
 	switch( LittleLong(*(uint *)buf) )
 	{
 	case IDSTUDIOHEADER:
+	printf("loadmap2\n");
 		Mod_LoadStudioModel( mod, buf, &loaded );
 		break;
 	case IDSPRITEHEADER:
+	printf("loadmap3\n");
 		Mod_LoadSpriteModel( mod, buf, &loaded, 0 );
 		break;
 	case IDALIASHEADER:
+	printf("loadmap4\n");
 		// REFTODO: move server-related code here
 		loaded = true;
 		break;
 	case Q1BSP_VERSION:
 	case HLBSP_VERSION:
 	case QBSP2_VERSION:
+	printf("loadmap5\n");
 		Mod_LoadBrushModel( mod, buf, &loaded );
 		// ref.dllFuncs.Mod_LoadModel( mod_brush, mod, buf, &loaded, 0 );
 		break;
@@ -319,6 +324,7 @@ model_t *Mod_LoadModel( model_t *mod, qboolean crash )
 		if( world.loading )
 			SetBits( mod->flags, MODEL_WORLD ); // mark worldmodel
 
+printf("loadmap6\n");
 		if( Host_IsDedicated() )
 		{
 			if( svgame.physFuncs.Mod_ProcessUserData != NULL )
@@ -330,6 +336,7 @@ model_t *Mod_LoadModel( model_t *mod, qboolean crash )
 #if !XASH_DEDICATED
 		else
 		{
+			printf("loadmap7\n");
 			loaded = ref.dllFuncs.Mod_ProcessRenderData( mod, true, buf );
 		}
 #endif
@@ -337,6 +344,7 @@ model_t *Mod_LoadModel( model_t *mod, qboolean crash )
 
 	if( !loaded )
 	{
+		printf("loadmap12\n");
 		Mod_FreeModel( mod );
 		Mem_Free( buf );
 

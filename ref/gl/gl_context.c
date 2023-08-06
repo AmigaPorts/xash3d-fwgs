@@ -135,24 +135,32 @@ void Mod_UnloadTextures( model_t *mod )
 qboolean Mod_ProcessRenderData( model_t *mod, qboolean create, const byte *buf )
 {
 	qboolean loaded = true;
-
+printf("loadmap8\n");
 	if( create )
 	{
 		switch( mod->type )
 		{
 			case mod_studio:
+				printf("modstudio\n");
 				Mod_LoadStudioModel( mod, buf, &loaded );
 				break;
 			case mod_sprite:
+				printf("modsprite\n");
+
 				Mod_LoadSpriteModel( mod, buf, &loaded, mod->numtexinfo );
 				break;
 			case mod_alias:
+				printf("modalias\n");
+
 				Mod_LoadAliasModel( mod, buf, &loaded );
 				break;
 			case mod_brush:
+			printf("loadmap10\n");
 				// Mod_LoadBrushModel( mod, buf, loaded );
 				break;
-			default: gEngfuncs.Host_Error( "Mod_LoadModel: unsupported type %d\n", mod->type );
+			default: 
+				printf("loadmap9\n");
+				gEngfuncs.Host_Error( "Mod_LoadModel: unsupported type %d\n", mod->type );
 		}
 	}
 
@@ -161,7 +169,7 @@ qboolean Mod_ProcessRenderData( model_t *mod, qboolean create, const byte *buf )
 
 	if( !create )
 		Mod_UnloadTextures( mod );
-
+printf("loadmap11\n");
 	return loaded;
 }
 

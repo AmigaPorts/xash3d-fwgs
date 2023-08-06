@@ -409,8 +409,8 @@ void AddPointToBounds( const vec3_t v, vec3_t mins, vec3_t maxs )
 	for( i = 0; i < 3; i++ )
 	{
 		val = v[i];
-		if( val < mins[i] ) mins[i] = val;
-		if( val > maxs[i] ) maxs[i] = val;
+		if( val < mins[i] ) mins[i] = LittleFloat(val);
+		if( val > maxs[i] ) maxs[i] = LittleFloat(val);
 	}
 }
 
